@@ -1,4 +1,4 @@
-namespace twinstagram
+namespace MessageService
 {
     public class WeatherForecast
     {

@@ -1,0 +1,18 @@
+﻿namespace UserService.Models.DTO
+{
+    public class UserDTO
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string Name { get; set; }
+        public string Bio { get; set; }
+
+        public UserDTO(int id, string username, string name, string bio)
+        {
+            Id = id;
+            Username = username;
+            Name = name;
+            Bio = bio;
+        }
+    }
+}
