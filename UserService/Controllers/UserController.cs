@@ -6,6 +6,7 @@ using UserService.Models.DTO;
 
 namespace UserService.Controllers
 {
+    //TODO: Add try catch handling
     [Route("[controller]")]
     [ApiController]
     public class UserController : Controller
@@ -108,21 +109,46 @@ namespace UserService.Controllers
         {
             //TODO: Add check if user is authenticated
 
-            //TODO: Check if already following
-
             var user = await _dbContext.Users
                  .FirstOrDefaultAsync(x => x.Username == followUserName);
 
-            if (user is not null)
+            var alreadyFollowing = await _dbContext.Followers
+                .AnyAsync(x => x.Username == userName && x.UsernameToFollow == followUserName);
+
+            if (user is not null && !alreadyFollowing)
             {
                 var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
                 _dbContext.SaveChanges();
 
                 return Ok();
             }
+            else if (alreadyFollowing)
+            {
+                return BadRequest("You are already following this account");
+            }
             else
             {
                 return BadRequest("The user you want to follow does not exist");
+            }
+        }
+        [HttpGet("Unfollow/{userName}/{unfollowUserName}")]
+        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> UnfollowUser(string userName, string unfollowUserName)
+        {
+            //TODO: Add check if user is authenticated
+
+            var unfollowRequest = await _dbContext.Followers
+                .SingleOrDefaultAsync(x => x.Username == userName && x.UsernameToFollow == unfollowUserName);
+
+            if (unfollowRequest is not null)
+            {
+                _dbContext.Followers.Remove(unfollowRequest);
+                _dbContext.SaveChanges();
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("You are not following this user");
             }
         }
     }

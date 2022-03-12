@@ -1,20 +1,21 @@
-﻿using UserService.Context;
+﻿using MessageService.Context;
+using UserService.Models;
 
 namespace UserService.Utility
 {
     public class DatabaseInitializer
     {
-        public static void Initialize(UserServiceDatabaseContext context)
+        public static void Initialize(MessageServiceDatabaseContext context)
         {
             context.Database.EnsureCreated();
 
-            if (context.Users.Any())
+            if (context.Messages.Any())
             {
                 return;
             }
         }
 
-        public static void DeleteAfter(UserServiceDatabaseContext context)
+        public static void DeleteAfter(MessageServiceDatabaseContext context)
         {
             context.Database.EnsureDeleted();
         }
