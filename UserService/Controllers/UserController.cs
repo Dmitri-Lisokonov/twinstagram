@@ -104,7 +104,30 @@ namespace UserService.Controllers
         }
 
         [HttpGet("Follow/{userName}/{followUserName}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> FollowUser(string userName, string followUserName)
+        public async Task<ActionResult> FollowUser(string userName, string followUserName)
+        {
+            //TODO: Add check if user is authenticated
+
+            //TODO: Check if already following
+
+            var user = await _dbContext.Users
+                 .FirstOrDefaultAsync(x => x.Username == followUserName);
+
+            if (user is not null)
+            {
+                var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
+                _dbContext.SaveChanges();
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("The user you want to follow does not exist");
+            }
+        }
+
+        [HttpGet("Follow/{userName}/{followUserName}")]
+        public async Task<ActionResult> FollowUser(string userName, string followUserName)
         {
             //TODO: Add check if user is authenticated
 
