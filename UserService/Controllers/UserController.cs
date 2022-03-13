@@ -105,7 +105,7 @@ namespace UserService.Controllers
         }
 
         [HttpGet("Follow/{userName}/{followUserName}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> FollowUser(string userName, string followUserName)
+        public async Task<ActionResult> FollowUser(string userName, string followUserName)
         {
             //TODO: Add check if user is authenticated
 
