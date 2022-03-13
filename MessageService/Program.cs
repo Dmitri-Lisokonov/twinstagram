@@ -1,8 +1,5 @@
 using MessageService.Context;
-<<<<<<< HEAD
-=======
 using MessageService.Utility;
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

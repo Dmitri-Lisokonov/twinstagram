@@ -16,13 +16,6 @@ namespace MessageService.Context
 
         }
 
-<<<<<<< HEAD
-        DbSet<Message> Messages { get; set; };
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-
-=======
         public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,10 +25,9 @@ namespace MessageService.Context
 
             modelBuilder.Entity<Message>()
                 .HasData(
-                    new Message() { Id = 1, UserId = 1, Description = "This is a picture of my dog... U like?", Image = "Base64Placeholder"  },
-                    new Message() { Id = 2, UserId = 2, Description = "I like trains", Image = "Base64Placeholder"  }
+                    new Message() { Id = 1, UserId = 1, Description = "This is a picture of my dog... U like?", Image = "Base64Placeholder", CreatedDate = DateTime.Now  },
+                    new Message() { Id = 2, UserId = 2, Description = "I like trains", Image = "Base64Placeholder", CreatedDate = DateTime.Now }
                 );
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
         }
 
     }

@@ -1,19 +1,13 @@
 ﻿using MessageService.Context;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Mvc;
-=======
 using MessageService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
 
 
 namespace MessageService.Controllers
 {
-<<<<<<< HEAD
     //TODO: Add try catch handling
-=======
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
+
     [Route("[controller]")]
     [ApiController]
     public class MessageController : Controller
@@ -24,8 +18,6 @@ namespace MessageService.Controllers
         {
             _dbContext = dbContext;
         }
-<<<<<<< HEAD
-=======
 
         [HttpGet("/{userId}")]
         public async Task<ActionResult<IEnumerable<List<Message>>>> GetMessages(int userId)
@@ -48,7 +40,7 @@ namespace MessageService.Controllers
         public async Task<ActionResult> CreateNewMessage(Message message)
         {
             //TODO: Add Authentication
-            message.CreatedDate = DateTime.Now
+            message.CreatedDate = DateTime.Now;
             await _dbContext.Messages.AddAsync(message);
             var result = await _dbContext.SaveChangesAsync();
 
@@ -109,6 +101,5 @@ namespace MessageService.Controllers
             }
   
         }
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
     }
 }

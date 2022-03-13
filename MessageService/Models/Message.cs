@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-﻿namespace MessageService.Models
-{
-    public class Message
-    {
-=======
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MessageService.Models
 {
@@ -32,6 +26,5 @@ namespace MessageService.Models
             Image = image;
             CreatedDate = createdDate;
         }
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
     }
 }

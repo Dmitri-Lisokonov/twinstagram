@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,19 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
-<<<<<<< HEAD
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-=======
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
->>>>>>> e884d9240d91d31b7bb0866a701fb38791c9aa11
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <PrivateAssets>all</PrivateAssets>
