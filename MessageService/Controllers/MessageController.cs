@@ -20,6 +20,7 @@ namespace MessageService.Controllers
         }
 
         [HttpGet("/{userId}")]
+        //TODO: Considering removing List and return just the Message
         public async Task<ActionResult<IEnumerable<List<Message>>>> GetMessages(int userId)
         {
             var messages = await _dbContext.Messages
