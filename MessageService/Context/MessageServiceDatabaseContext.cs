@@ -5,22 +5,6 @@ namespace MessageService.Context
 {
     public class MessageServiceDatabaseContext : DbContext
     {
-        public void Increment ()
-        {
-            int a = 1;
-            int b = 2;
-            int c = 0;
-
-            c = a + b;
-        }
-        public void Increment1()
-        {
-            int a = 1;
-            int b = 2;
-            int c = 0;
-
-            c = a + b;
-        }
         public MessageServiceDatabaseContext()
         {
 

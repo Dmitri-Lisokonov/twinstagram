@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AuthenticationServer.Controllers
+namespace AuthenticationService.Controllers
 {
     public class RegisterUserModel
     {

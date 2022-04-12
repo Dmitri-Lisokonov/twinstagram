@@ -9,14 +9,9 @@ namespace UserService.Models
         public int Id { get; set; }
         public string Username { get; set; }
         public string UsernameToFollow { get; set; }
-
-        public Follow()
+        public Follow(int id, string username, string usernameToFollow)
         {
-
-        }
-
-        public Follow(string username, string usernameToFollow)
-        {
+            Id = id;
             Username = username;
             UsernameToFollow = usernameToFollow;
         }

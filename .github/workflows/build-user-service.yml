@@ -1,4 +1,4 @@
-name: Build MessageService
+name: Build UserService
 
 on:
   push:
@@ -6,21 +6,21 @@ on:
       - main
       - development
     paths:
-      - "MessageService/**"
-      - "MessageService.Test/**"
-      - ".github/workflows/build-message-service.yml"
+      - "UserService/**"
+      - "UserService.Test/**"
+      - ".github/workflows/build-user-service.yml"
   pull_request:
     branches: 
       - main
       - development
     paths:
-      - "MessageService/**"
-      - "MessageService.Test/**"
-      - ".github/workflows/build-message-service.yml"
+      - "UserService/**"
+      - "UserService.Test/**"
+      - ".github/workflows/build-user-service.yml"
 env:
-  PROJECT_PATH: 'MessageService/MessageService.csproj'
-  TEST_PATH: 'MessageService.Test/MessageService.Test.csproj'
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_MESSAGE_SERVICE }}
+  PROJECT_PATH: 'UserService/UserService.csproj'
+  TEST_PATH: 'UserService.Test/UserService.Test.csproj'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_USER_SERVICE }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: 'Install dotnet'
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
 
@@ -48,11 +48,11 @@ jobs:
     - name: SonarScanner for .NET 6
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
-        sonarProjectKey: dmitri-lisokonov_twinstagram_message-service
-        sonarProjectName:  dmitri-lisokonov_twinstagram_message-service
+        sonarProjectKey: dmitri-lisokonov_twinstagram_user-service
+        sonarProjectName:  dmitri-lisokonov_twinstagram_user-service
         sonarOrganization: dmitri-lisokonov
-        dotnetBuildArguments: ./MessageService
-        dotnetTestArguments: ./MessageService.Test
+        dotnetBuildArguments: ./UserService
+        dotnetTestArguments: ./UserService.Test
 
 
 

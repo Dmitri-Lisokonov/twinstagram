@@ -16,8 +16,8 @@ namespace UserService.Context
 
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Follow> Followers { get; set; }
+        public DbSet<User>? Users { get; set; }
+        public DbSet<Follow>? Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,17 +26,12 @@ namespace UserService.Context
 
             modelBuilder.Entity<User>()
                 .HasData(
-                    new User() { Id = 1, Name = "Jan", Username = "jan_verkouden", Bio = "altijd ziek...", Password = "Test", PasswordSalt = "Salty" },
-                    new User() { Id = 2, Name = "Klaas", Username = "klaas_debaas", Bio = "big boss", Password = "Test", PasswordSalt = "Salty" },
-                    new User() { Id = 3, Name = "Lucas", Username = "lucas_leip", Bio = "leipe vent", Password = "Test", PasswordSalt = "Salty" }
+                    new User(1, "Jan", "jan_verkouden", "altijd ziek...")
                 );
 
             modelBuilder.Entity<Follow>()
               .HasData(
-                  new Follow() { Id = 1, Username = "jan_verkouden", UsernameToFollow = "lucas_leip" },
-                  new Follow() { Id = 2, Username = "jan_verkouden", UsernameToFollow = "klaas_debaas" },
-                  new Follow() { Id = 3, Username = "klaas_debaas", UsernameToFollow = "jan_verkouden" },
-                  new Follow() { Id = 4, Username = "lucas_leip", UsernameToFollow = "jan_verkouden" }
+                  new Follow(1, "jan_verkouden", "lucas_leip") 
               );
         }
 

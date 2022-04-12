@@ -1,11 +1,10 @@
-using AuthenticationServer.Models;
 using AuthenticationService.Models;
 using AuthenticationService.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthenticationServer.Controllers
+namespace AuthenticationService.Controllers
 {
     [ApiController]
     [Route("api/[controller]/")]
@@ -128,7 +127,7 @@ namespace AuthenticationServer.Controllers
 
         [HttpGet]
         [Route("jwt")]
-        public async Task<ActionResult> CheckJwt()
+        public ActionResult CheckJwt()
         {
             var results = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
             if (results is not null)

@@ -8,10 +8,12 @@ namespace UserService.Utility
         {
             context.Database.EnsureCreated();
 
+#pragma warning disable CS8604 // Possible null reference argument.
             if (context.Users.Any())
             {
                 return;
             }
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public static void DeleteAfter(UserServiceDatabaseContext context)

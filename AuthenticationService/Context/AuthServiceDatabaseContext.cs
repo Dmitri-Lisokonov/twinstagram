@@ -1,8 +1,8 @@
-﻿using AuthenticationServer.Models;
+﻿using AuthenticationService.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthenticationServer.Context
+namespace AuthenticationService.Context
 {
     public class AuthServiceDatabaseContext : IdentityDbContext<User>
     {
