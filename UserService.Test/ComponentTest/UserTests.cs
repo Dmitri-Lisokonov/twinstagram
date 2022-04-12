@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserService.Context;
@@ -11,25 +10,26 @@ namespace UserService.Test
 {
     public class UserTests
     {
+
         private readonly UserController _controller;
         private readonly UserServiceDatabaseContext _context;
 
         public UserTests()
         {
             var options = new DbContextOptionsBuilder<UserServiceDatabaseContext>().UseInMemoryDatabase(databaseName: "InMemoryUserServiceDatabase").Options;
-            var context = new UserServiceDatabaseContext(options);
-            var controller = new UserController(context);
+            _context = new UserServiceDatabaseContext(options);
+            _controller = new UserController(_context);
             createUsersInMemoryDatabase();        
         }
 
         [Fact]
-        public async Task GetUser_ReturnsUser()
+        public void GetUser_ReturnsUser()
         {
             Assert.Equal(1, 1);
         }
 
         [Fact]
-        public async Task GetUserWithInvalidUsername_ReturnsNotFound()
+        public void GetUserWithInvalidUsername_ReturnsNotFound()
         {
             Assert.Equal(1, 1);
         }
