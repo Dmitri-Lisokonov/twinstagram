@@ -7,7 +7,7 @@ on:
       - development
     paths:
       - "MessageService/**"
-      - "MessageService.Tests/**"
+      - "MessageService.Test/**"
       - ".github/workflows/build-image-service.yml"
   pull_request:
     branches: 
@@ -15,11 +15,11 @@ on:
       - development
     paths:
       - "MessageService/**"
-      - "MessageService.Tests/**"
+      - "MessageService.Test/**"
       - ".github/workflows/build-message-service.yml"
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
-  TEST_PATH: 'MessageService.Tests/MessageService.Tests.csproj'
+  TEST_PATH: 'MessageService.Test/MessageService.Test.csproj'
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_IMAGE_SERVICE }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
