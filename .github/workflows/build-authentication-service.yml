@@ -52,7 +52,7 @@ jobs:
         sonarProjectName:  dmitri-lisokonov_twinstagram_authentication-service
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./AuthenticationService
-        # dotnetTestArguments: ./AuthenticationService.Test
+        dotnetTestArguments: ./AuthenticationService.Test
 
 
 
