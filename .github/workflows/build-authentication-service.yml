@@ -41,8 +41,8 @@ jobs:
     - name: 'Build project'
       run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
       
-    # - name: 'Run tests'
-    #   run: dotnet test ${{ env.TEST_PATH }}
+    - name: 'Run tests'
+      run: dotnet test ${{ env.TEST_PATH }}
 
     # https://github.com/highbyte/sonarscan-dotnet
     - name: SonarScanner for .NET 6
