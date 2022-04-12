@@ -16,7 +16,7 @@ namespace MessageService.Context
 
         }
 
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Message>? Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

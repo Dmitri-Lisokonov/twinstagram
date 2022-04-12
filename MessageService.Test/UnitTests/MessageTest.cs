@@ -11,8 +11,8 @@ namespace UserService.Test
 {
     public class MessageTest
     {
-        private readonly MessageController _controller;
-        private readonly MessageServiceDatabaseContext _context;
+        private readonly MessageController? _controller;
+        private readonly MessageServiceDatabaseContext? _context;
 
         public MessageTest()
         {
