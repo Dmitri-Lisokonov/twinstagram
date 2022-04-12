@@ -1,0 +1,57 @@
+name: Build MessageService
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ImageService/**"
+      - "ImageService.Tests/**"
+      - ".github/workflows/build-image-service.yml"
+  pull_request:
+    branches: 
+      - main
+      - development
+    paths:
+      - "MessageService/**"
+      - "MessageService.Tests/**"
+      - ".github/workflows/build-message-service.yml"
+env:
+  PROJECT_PATH: 'MessageService/MessageService.csproj'
+  TEST_PATH: 'MessageService.Tests/MessageService.Tests.csproj'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_IMAGE_SERVICE }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Install dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: 'Restore packages'
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: 'Build project'
+      run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+      
+    - name: 'Run tests'
+      run: dotnet test ${{ env.TEST_PATH }}
+
+    # https://github.com/highbyte/sonarscan-dotnet
+    # - name: SonarScanner for .NET 5
+    #   uses: highbyte/sonarscan-dotnet@2.0
+    #   with:
+    #     sonarProjectKey: siebrum_aci-backend-image-service
+    #     sonarProjectName:  aci-backend-image-service
+    #     sonarOrganization: siebrum
+    #     dotnetBuildArguments: ./ImageService
+    #     dotnetTestArguments: ./ImageService.Tests
+
+
+
