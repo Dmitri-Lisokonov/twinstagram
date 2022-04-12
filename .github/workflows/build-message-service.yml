@@ -46,7 +46,7 @@ jobs:
 
     # https://github.com/highbyte/sonarscan-dotnet
     - name: SonarScanner for .NET 6
-      uses: highbyte/sonarscan-dotnet@2.1.2
+      uses: highbyte/sonarscan-dotnet
       with:
         sonarProjectKey: dmitri-lisokonov_twinstagram_message-service
         sonarProjectName:  dmitri-lisokonov_twinstagram_message-service
