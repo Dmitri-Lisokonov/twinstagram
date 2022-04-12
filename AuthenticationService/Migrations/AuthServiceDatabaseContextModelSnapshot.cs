@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AuthenticationServer.Migrations
+namespace AuthenticationService.Migrations
 {
     [DbContext(typeof(AuthServiceDatabaseContext))]
     partial class AuthServiceDatabaseContextModelSnapshot : ModelSnapshot

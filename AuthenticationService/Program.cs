@@ -1,5 +1,5 @@
-using AuthenticationServer.Context;
-using AuthenticationServer.Models;
+using AuthenticationService.Context;
+using AuthenticationService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
