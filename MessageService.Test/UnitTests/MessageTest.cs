@@ -27,7 +27,7 @@ namespace UserService.Test
         {
             Assert.Equal(1, 1);
         }
-        //.
+
         private static void createUsersInMemoryDatabase()
         {
 
