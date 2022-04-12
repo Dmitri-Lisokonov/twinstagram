@@ -20,7 +20,7 @@ on:
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
   TEST_PATH: 'MessageService.Test/MessageService.Test.csproj'
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_IMAGE_SERVICE }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_MESSAGE_SERVICE }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
