@@ -6,8 +6,8 @@ on:
       - main
       - development
     paths:
-      - "ImageService/**"
-      - "ImageService.Tests/**"
+      - "MessageService/**"
+      - "MessageService.Tests/**"
       - ".github/workflows/build-image-service.yml"
   pull_request:
     branches: 
