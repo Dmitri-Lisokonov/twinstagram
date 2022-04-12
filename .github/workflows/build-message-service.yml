@@ -48,7 +48,7 @@ jobs:
     - name: SonarScanner for .NET 6
       uses: highbyte/sonarscan-dotnet@2.0
       with:
-        sonarProjectKey: siebrum_aci-backend-image-service
+        sonarProjectKey: dmitri-lisokonov_twinstagram_message-service
         sonarProjectName:  dmitri-lisokonov_twinstagram_message-service
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./MessageService
