@@ -23,9 +23,11 @@ namespace MessageService.Controllers
         //TODO: Considering removing List and return just the Message
         public async Task<ActionResult<IEnumerable<List<Message>>>> GetMessages(int userId)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var messages = await _dbContext.Messages
                .Where(x => x.UserId == userId)
                .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if (messages.Any())
             {
@@ -42,7 +44,9 @@ namespace MessageService.Controllers
         {
             //TODO: Add Authentication
             message.CreatedDate = DateTime.Now;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             await _dbContext.Messages.AddAsync(message);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             var result = await _dbContext.SaveChangesAsync();
 
             if (result > 0)
@@ -59,7 +63,9 @@ namespace MessageService.Controllers
         public async Task<ActionResult> DeleteMessage(Message message)
         {
             //TODO: Add Authentication
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             _dbContext.Messages.Remove(message);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             var result = await _dbContext.SaveChangesAsync();
 
             if(result > 0)
@@ -86,9 +92,11 @@ namespace MessageService.Controllers
             {
                 foreach (var followingId in followingIdList)
                 {
+#pragma warning disable CS8604 // Possible null reference argument.
                     var messages = await _dbContext.Messages
                         .Where(x => x.UserId == followingId)
                         .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
                     feed.AddRange(messages);
                 }
