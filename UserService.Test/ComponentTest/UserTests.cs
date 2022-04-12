@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UserService.Context;
 using UserService.Controllers;
-using UserService.Models;
 using Xunit;
 
 namespace UserService.Test
@@ -36,12 +33,7 @@ namespace UserService.Test
 
         private static void createUsersInMemoryDatabase()
         {
-            var users = new List<User>
-            {
-                new User { Id = 1, Name = "Jan"},
-                new User { Id = 1, Name = "Piet"},
-                new User { Id = 1, Name = "Jeroen"}
-            };
+   
         }
     }
 }

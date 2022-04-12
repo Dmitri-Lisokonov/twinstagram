@@ -21,8 +21,10 @@ namespace UserService.Controllers
         [HttpGet("/{username}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser(string username)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if (user == null)
             {
@@ -37,14 +39,18 @@ namespace UserService.Controllers
         [HttpGet("Followers/{username}")]
         public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowers(string username)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if (user is not null)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 var followers = await _dbContext.Followers
                    .Where(x => x.UsernameToFollow == user.Username)
                    .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 List<UserDTO> followerList = new List<UserDTO>();
 
@@ -72,14 +78,18 @@ namespace UserService.Controllers
         [HttpGet("Following/{username}")]
         public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowing(string username)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if(user is not null)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 var following = await _dbContext.Followers
                 .Where(x => x.Username == user.Username)
                 .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 List<UserDTO> followingList = new List<UserDTO>();
 
@@ -109,15 +119,19 @@ namespace UserService.Controllers
         {
             //TODO: Add check if user is authenticated
 
+#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
                  .FirstOrDefaultAsync(x => x.Username == followUserName);
+#pragma warning restore CS8604 // Possible null reference argument.
 
+#pragma warning disable CS8604 // Possible null reference argument.
             var alreadyFollowing = await _dbContext.Followers
                 .AnyAsync(x => x.Username == userName && x.UsernameToFollow == followUserName);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if (user is not null && !alreadyFollowing)
             {
-                var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
+                var result = await _dbContext.Followers.AddAsync(new Follow(1, userName, followUserName));
                 _dbContext.SaveChanges();
 
                 return Ok();
@@ -136,8 +150,10 @@ namespace UserService.Controllers
         {
             //TODO: Add check if user is authenticated
 
+#pragma warning disable CS8604 // Possible null reference argument.
             var unfollowRequest = await _dbContext.Followers
                 .SingleOrDefaultAsync(x => x.Username == userName && x.UsernameToFollow == unfollowUserName);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             if (unfollowRequest is not null)
             {
