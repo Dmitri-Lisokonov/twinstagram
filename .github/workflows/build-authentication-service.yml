@@ -52,7 +52,7 @@ jobs:
           -Dsonar.projectKey=authentication_service
           -Dsonar.organization=dmitri-lisokonov
           -Dsonar.projectBaseDir=./AuthenticationService
-          -Dsonar.tests=AuthenticationService.Test
+          -Dsonar.tests=./AuthenticationService.Test
 
 
 
