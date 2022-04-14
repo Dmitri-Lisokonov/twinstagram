@@ -9,7 +9,7 @@ namespace UserService.Controllers
     //TODO: Add try catch handling
     [Route("[controller]")]
     [ApiController]
-    // test
+    
     public class UserController : Controller
     {
         private readonly UserServiceDatabaseContext _dbContext;
