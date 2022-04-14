@@ -48,8 +48,8 @@ jobs:
     - name: SonarScanner for .NET 6
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
-        sonarProjectKey: authentication-service
-        sonarProjectName: authentication-service
+        sonarProjectKey: authentication_service
+        sonarProjectName: authentication_service
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./AuthenticationService
         dotnetTestArguments: ./AuthenticationService.Test
