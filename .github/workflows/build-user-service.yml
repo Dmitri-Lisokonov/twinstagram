@@ -20,7 +20,7 @@ on:
 env:
   PROJECT_PATH: 'UserService/UserService.csproj'
   TEST_PATH: 'UserService.Test/UserService.Test.csproj'
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_USER_SERVICE }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
