@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MessageService.Controllers
 {
     //TODO: Add try catch handling
-
+    //change
     [Route("[controller]")]
     [ApiController]
     // TEST
