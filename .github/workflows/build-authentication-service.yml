@@ -48,11 +48,11 @@ jobs:
     - name: SonarScanner for .NET 6
       uses: SonarSource/sonarcloud-github-action@de2e56b42aa84d0b1c5b622644ac17e505c9a049
       with:
-        sonarProjectKey: authentication_service
-        sonarProjectName: authentication_service
-        sonarOrganization: dmitri-lisokonov
-        dotnetBuildArguments: ./AuthenticationService
-        dotnetTestArguments: ./AuthenticationService.Test
+      args:
+        -Dsonar.projectKey=authentication_service
+        -Dsonar.organization=dmitri-lisokonov
+        -Dsonar.projectBaseDir=./AuthenticationService
+        -Dsonar.tests=AuthenticationService.Test
 
 
 
