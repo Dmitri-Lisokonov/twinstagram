@@ -10,7 +10,6 @@ namespace MessageService.Controllers
     //change
     [Route("[controller]")]
     [ApiController]
-    // TEST
     public class MessageController : Controller
     {
         private readonly MessageServiceDatabaseContext _dbContext;

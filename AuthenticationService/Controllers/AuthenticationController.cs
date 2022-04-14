@@ -8,7 +8,6 @@ namespace AuthenticationService.Controllers
 {
     [ApiController]
     [Route("api/[controller]/")]
-    // TEST
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
