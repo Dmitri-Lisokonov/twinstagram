@@ -49,7 +49,7 @@ jobs:
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
         sonarProjectKey: message_service
-        sonarProjectName: message_service
+        sonarProjectName: MessageService
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./MessageService
         dotnetTestArguments: ./MessageService.Test

@@ -49,7 +49,7 @@ jobs:
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
         sonarProjectKey: user_service
-        sonarProjectName: user_service
+        sonarProjectName: UserService
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./UserService
         dotnetTestArguments: ./UserService.Test
