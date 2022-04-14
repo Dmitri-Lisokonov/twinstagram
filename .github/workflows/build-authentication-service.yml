@@ -51,8 +51,8 @@ jobs:
         sonarProjectKey: user_service
         sonarProjectName: user_service
         sonarOrganization: dmitri-lisokonov
-        dotnetBuildArguments: ./UserService
-        dotnetTestArguments: ./UserService.Test
+        dotnetBuildArguments: ./AuthenticationService
+        dotnetTestArguments: ./AuthenticationService.Test
 
 
 
