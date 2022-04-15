@@ -6,10 +6,8 @@ using UserService.Models.DTO;
 
 namespace UserService.Controllers
 {
-    //TODO: Add try catch handling
-    [Route("[controller]")]
     [ApiController]
-    
+    [Route("[controller]")]
     public class UserController : Controller
     {
         private readonly UserServiceDatabaseContext _dbContext;
