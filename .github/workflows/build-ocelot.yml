@@ -1,0 +1,42 @@
+name: Build OcelotAPIGateway
+
+on:
+  push:
+    branches:
+      - main
+      - development
+    paths:
+      - "OcelotAPIGateway/**"
+      - ".github/workflows/build-ocelot.yml"
+  pull_request:
+    branches: 
+      - main
+      - development
+    paths:
+      - "OcelotAPIGateway/**"
+      - ".github/workflows/build-ocelot.yml"
+env:
+  PROJECT_PATH: 'OcelotAPIGateway/OcelotAPIGateway.csproj'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_AUTH_SERVICE }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Install dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: 'Restore packages'
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: 'Build project'
+      run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+
+
+
