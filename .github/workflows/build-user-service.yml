@@ -48,8 +48,8 @@ jobs:
     - name: SonarScanner for .NET 6
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
-        sonarProjectKey: dmitri-lisokonov_twinstagram_user-service
-        sonarProjectName:  dmitri-lisokonov_twinstagram_user-service
+        sonarProjectKey: user_service
+        sonarProjectName: UserService
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./UserService
         dotnetTestArguments: ./UserService.Test
