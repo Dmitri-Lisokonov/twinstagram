@@ -130,7 +130,7 @@ namespace UserService.Controllers
 
             if (user is not null && !alreadyFollowing)
             {
-                var result = await _dbContext.Followers.AddAsync(new Follow(1, userName, followUserName));
+                var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
                 _dbContext.SaveChanges();
 
                 return Ok();

@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UserService.Models
 {
-    public class User
+    public class ApplicationUser
     {
         [Key, Required]
         public int Id { get; set; }
@@ -11,13 +12,13 @@ namespace UserService.Models
         [Required]
         public string Name { get; set; }
         public string Bio { get; set; }
-        [Required]
-        public string? PasswordSalt { get; set; }
-        [Required]
-        public string? Password { get; set; }
-        public User(int id, string username, string name, string bio)
+
+        public ApplicationUser()
         {
-            Id = id;
+        }
+
+        public ApplicationUser(string username, string name, string bio)
+        {
             Username = username;
             Name = name;    
             Bio = bio;
