@@ -15,10 +15,21 @@ builder.Services.AddDbContext<UserService.Context.UserServiceDatabaseContext>(op
    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Add CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+// Add Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserService", Version = "v1" });
@@ -50,6 +61,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserService v1"));
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
