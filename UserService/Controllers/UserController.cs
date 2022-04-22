@@ -17,7 +17,7 @@ namespace UserService.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("/{username}")]
+        [HttpGet("{username}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser(string username)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
