@@ -16,6 +16,17 @@ namespace UserService.Context
 
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //Connect to MySQL database for development
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseMySQL("server=localhost;Port=3306;uid=admin;pwd=123Welkom!;database=userservice_db;");
+            }
+
+            base.OnConfiguring(optionsBuilder);
+        }
+
         public DbSet<ApplicationUser>? Users { get; set; }
         public DbSet<Follow>? Followers { get; set; }
 

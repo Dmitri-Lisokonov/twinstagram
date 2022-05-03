@@ -18,8 +18,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{54DDCC84-7896-41F7-AA56-2B5BB2B502AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8D42E6C-EEAD-493C-B7BE-9D663BE7B69C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService.Test", "AuthenticationService.Test\AuthenticationService.Test.csproj", "{AA08DEC7-0EC8-4F08-BAEA-9E577D593DBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationService.Test", "AuthenticationService.Test\AuthenticationService.Test.csproj", "{AA08DEC7-0EC8-4F08-BAEA-9E577D593DBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

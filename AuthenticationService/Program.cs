@@ -19,12 +19,6 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthenticationService", Version = "v1" });
 });
 
-// Connect to MySQL database
-builder.Services.AddDbContext<AuthServiceDatabaseContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 28)));
-});
-
 // Add CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll",

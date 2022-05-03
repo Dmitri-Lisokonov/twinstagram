@@ -9,12 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-//Connect to MySQL database
-builder.Services.AddDbContext<UserService.Context.UserServiceDatabaseContext>(options =>
-{
-   options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
 // Add CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll",

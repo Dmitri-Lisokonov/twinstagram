@@ -9,7 +9,7 @@
           "Port": 7039
         }
       ],
-      "UpstreamPathTemplate": "/message/{everything}"
+      "UpstreamPathTemplate": "api/message/{everything}"
     },
     {
       "DownstreamPathTemplate": "/authentication/{everything}",
@@ -20,7 +20,7 @@
           "Port": 7225
         }
       ],
-      "UpstreamPathTemplate": "/authentication/{everything}"
+      "UpstreamPathTemplate": "api/authentication/{everything}"
     },
     {
       "DownstreamPathTemplate": "/user/{everything}",
@@ -31,7 +31,7 @@
           "Port": 7264
         }
       ],
-      "UpstreamPathTemplate": "/user/{everything}"
+      "UpstreamPathTemplate": "api/user/{everything}"
     }
   ],
   "GlobalConfiguration": {
