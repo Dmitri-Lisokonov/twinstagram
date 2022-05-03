@@ -27,7 +27,9 @@ namespace MessageService.Context
                 }
                 else
                 {
-                    optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db_connection-string").Replace("DATABASE_NAME", "message-service_db"));
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                    optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db-connection-string").Replace("DATABASE_NAME", "message-service_db"));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 }
             }
             
