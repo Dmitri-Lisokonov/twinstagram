@@ -18,6 +18,22 @@ namespace UserService.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //Connect to Azure SQL Database if deployed
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//                var connectionString = Environment.GetEnvironmentVariable("db-connection-string");
+//                if (string.IsNullOrWhiteSpace(connectionString))
+//                {
+//                    throw new MissingFieldException("Database environment variable not found.");
+//                }
+//                else
+//                {
+//#pragma warning disable CS8602 // Dereference of a possibly null reference.
+//                    optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db-connection-string").Replace("DATABASE_NAME", "message-service_db"));
+//#pragma warning restore CS8602 // Dereference of a possibly null reference.
+//                }
+//            }
+            
             //Connect to MySQL database for development
             if (!optionsBuilder.IsConfigured)
             {
