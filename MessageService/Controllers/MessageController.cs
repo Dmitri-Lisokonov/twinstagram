@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MessageService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class MessageController : Controller
     {
         private readonly MessageServiceDatabaseContext _dbContext;
