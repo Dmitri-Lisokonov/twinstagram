@@ -49,7 +49,7 @@ jobs:
       uses: highbyte/sonarscan-dotnet@v2.1.2
       with:
         sonarProjectKey: authentication_service
-        sonarProjectName:  AuthenticationService
+        sonarProjectName: AuthenticationService
         sonarOrganization: dmitri-lisokonov
         dotnetBuildArguments: ./AuthenticationService
         dotnetTestArguments: ./AuthenticationService.Test

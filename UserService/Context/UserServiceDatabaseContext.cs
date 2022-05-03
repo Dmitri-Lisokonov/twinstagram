@@ -16,22 +16,56 @@ namespace UserService.Context
 
         }
 
-        public DbSet<User>? Users { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //Connect to MySQL database for development
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseMySQL("server=localhost;Port=3306;uid=admin;pwd=123Welkom!;database=userservice_db;");
+            }
+
+            base.OnConfiguring(optionsBuilder);
+        }
+
+        public DbSet<ApplicationUser>? Users { get; set; }
         public DbSet<Follow>? Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<ApplicationUser>().ToTable("User");
             modelBuilder.Entity<Follow>().ToTable("Follower");
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<ApplicationUser>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
+
+
+            modelBuilder.Entity<ApplicationUser>()
                 .HasData(
-                    new User(1, "Jan", "jan_verkouden", "altijd ziek...")
+                    new ApplicationUser()
+                    {
+                        Id = 1,
+                        Username = "a",
+                        Name = "Jan",
+                        Bio = "I am a programmer",
+                    },
+                    new ApplicationUser()
+                    {
+                        Id = 2,
+                        Username = "b",
+                        Name = "Piet",
+                        Bio = "I am a chef",
+                    }
                 );
 
             modelBuilder.Entity<Follow>()
               .HasData(
-                  new Follow(1, "jan_verkouden", "lucas_leip") 
+                  new Follow()
+                  {
+                      Id = 1,
+                      Username = "a",
+                      UsernameToFollow = "b"
+                  }
               );
         }
 

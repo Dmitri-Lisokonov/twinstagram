@@ -17,8 +17,8 @@ namespace UserService.Test
         public MessageTest()
         {
             var options = new DbContextOptionsBuilder<MessageServiceDatabaseContext>().UseInMemoryDatabase(databaseName: "InMemoryUserServiceDatabase").Options;
-            var context = new MessageServiceDatabaseContext(options);
-            var controller = new MessageController(context);
+            _context = new MessageServiceDatabaseContext(options);
+            _controller = new MessageController(_context);
             createUsersInMemoryDatabase();        
         }
 

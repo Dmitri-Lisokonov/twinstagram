@@ -1,22 +1,33 @@
 using MessageService.Context;
 using MessageService.Utility;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
 builder.Services.AddControllers();
-
-//Connect to MySQL database
-builder.Services.AddDbContext<MessageServiceDatabaseContext>(options =>
-{
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddDbContext<MessageServiceDatabaseContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Add Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MessageService", Version = "v1" });
+});
+
+// Add CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -42,8 +53,10 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MessageService v1"));
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

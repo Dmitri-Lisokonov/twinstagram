@@ -6,9 +6,8 @@ using UserService.Models.DTO;
 
 namespace UserService.Controllers
 {
-    //TODO: Add try catch handling
-    [Route("[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly UserServiceDatabaseContext _dbContext;
@@ -18,7 +17,7 @@ namespace UserService.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet("/{username}")]
+        [HttpGet("{username}")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser(string username)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -131,7 +130,7 @@ namespace UserService.Controllers
 
             if (user is not null && !alreadyFollowing)
             {
-                var result = await _dbContext.Followers.AddAsync(new Follow(1, userName, followUserName));
+                var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
                 _dbContext.SaveChanges();
 
                 return Ok();

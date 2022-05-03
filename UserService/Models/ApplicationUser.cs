@@ -3,23 +3,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UserService.Models
 {
-    public class Follow
+    public class ApplicationUser
     {
         [Key, Required]
         public int Id { get; set; }
+        [Required]
         public string Username { get; set; }
-        public string UsernameToFollow { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string Bio { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public Follow()
+        public ApplicationUser()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            
         }
-        public Follow(string username, string usernameToFollow)
+
+        public ApplicationUser(string username, string name, string bio)
         {
             Username = username;
-            UsernameToFollow = usernameToFollow;
+            Name = name;    
+            Bio = bio;
         }
     }
 }
