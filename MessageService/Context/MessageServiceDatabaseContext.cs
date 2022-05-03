@@ -20,7 +20,7 @@ namespace MessageService.Context
             //Connect to Azure SQL Database if deployed
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = Environment.GetEnvironmentVariable("db_connection-string");
+                var connectionString = Environment.GetEnvironmentVariable("db-connection-string");
                 if (string.IsNullOrWhiteSpace(connectionString))
                 {
                     throw new MissingFieldException("Database environment variable not found.");
