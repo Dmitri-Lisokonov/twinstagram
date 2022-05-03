@@ -18,7 +18,7 @@ namespace UserService.Controllers
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser(string username)
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUser(string username)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
@@ -31,12 +31,12 @@ namespace UserService.Controllers
             }
             else
             {
-                UserDTO userDto = new UserDTO(user.Id, user.Username, user.Name, user.Bio);
-                return Ok(userDto);
+                //UserDto userDto = new UserDto(user.Id, user.Username, user.Name, user.Bio);
+                return Ok();
             }
         }
         [HttpGet("Followers/{username}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowers(string username)
+        public async Task<ActionResult<IEnumerable<List<UserDto>>>> GetUserFollowers(string username)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
@@ -51,7 +51,7 @@ namespace UserService.Controllers
                    .ToListAsync();
 #pragma warning restore CS8604 // Possible null reference argument.
 
-                List<UserDTO> followerList = new List<UserDTO>();
+                List<UserDto> followerList = new List<UserDto>();
 
                 if (followers.Count() > 0)
                 {
@@ -62,7 +62,7 @@ namespace UserService.Controllers
 
                         if (result is not null)
                         {
-                            followerList.Add(new UserDTO(result.Id, result.Username, result.Name, result.Bio));
+                            //followerList.Add(new UserDto(result.Id, result.Username, result.Name, result.Bio));
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace UserService.Controllers
         }
 
         [HttpGet("Following/{username}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowing(string username)
+        public async Task<ActionResult<IEnumerable<List<UserDto>>>> GetUserFollowing(string username)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
@@ -90,7 +90,7 @@ namespace UserService.Controllers
                 .ToListAsync();
 #pragma warning restore CS8604 // Possible null reference argument.
 
-                List<UserDTO> followingList = new List<UserDTO>();
+                List<UserDto> followingList = new List<UserDto>();
 
                 if (following.Count() > 0)
                 {
@@ -101,7 +101,7 @@ namespace UserService.Controllers
 
                         if (result is not null)
                         {
-                            followingList.Add(new UserDTO(result.Id, result.Username, result.Name, result.Bio));
+                            //followingList.Add(new UserDto(result.Id, result.Username, result.Name, result.Bio));
                         }
                     }
                 }
@@ -145,7 +145,7 @@ namespace UserService.Controllers
             }
         }
         [HttpGet("Unfollow/{userName}/{unfollowUserName}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> UnfollowUser(string userName, string unfollowUserName)
+        public async Task<ActionResult<IEnumerable<List<UserDto>>>> UnfollowUser(string userName, string unfollowUserName)
         {
             //TODO: Add check if user is authenticated
 

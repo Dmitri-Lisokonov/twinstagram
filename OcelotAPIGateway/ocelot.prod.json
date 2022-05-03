@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "api/message/{everything}"
-    }
+    },
     {
       "DownstreamPathTemplate": "/user/{everything}",
       "DownstreamScheme": "http",
