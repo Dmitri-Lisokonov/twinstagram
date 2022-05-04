@@ -1,14 +1,15 @@
 using AuthenticationService.Context;
-using AuthenticationService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.Models.User;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AuthServiceDatabaseContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -38,14 +39,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Twinstagram"],
-        ValidAudience = builder.Configuration["Twinstagram"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["MySecretKey"]))
+        ValidIssuer = "Twinstagram",
+        ValidAudience = "Twinstagram",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MySecretTwinstagramKey"))
     };
 });
 
 //Add Identity
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<AuthenticationUser, IdentityRole>()
       // services.AddDefaultIdentity<IdentityUser>()
       .AddEntityFrameworkStores<AuthServiceDatabaseContext>()
       .AddDefaultTokenProviders();
@@ -87,8 +88,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

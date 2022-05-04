@@ -1,22 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MessageService.Models
+namespace Shared.Models.Message
 {
     public class Message
     {
         [Key, Required]
-        public int Id { get; set; }
+        public Guid Id { get; private set; }
 
         [Required]
-        public int UserId { get; set; }
+        public Guid UserId { get; private set; }
 
-        public string Description { get; set; }
-
-        [Required]
-        public string? Image { get; set; }
+        public string Description { get; private set; }
 
         [Required]
-        public DateTime CreatedDate { get; set; }
+        public string? Image { get; private set; }
+
+        [Required]
+        public DateTime CreatedDate { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public Message()
@@ -24,7 +24,7 @@ namespace MessageService.Models
         {
 
         }
-        public Message(int userId, string description, string image, DateTime createdDate)
+        public Message(Guid userId, string description, string image, DateTime createdDate)
         {
             UserId = userId;
             Description = description;

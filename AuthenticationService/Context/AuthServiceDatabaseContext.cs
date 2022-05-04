@@ -1,10 +1,11 @@
-﻿using AuthenticationService.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shared.Models;
+using Shared.Models.User;
 
 namespace AuthenticationService.Context
 {
-    public class AuthServiceDatabaseContext : IdentityDbContext<User>
+    public class AuthServiceDatabaseContext : IdentityDbContext<AuthenticationUser>
     {
 
         public AuthServiceDatabaseContext()

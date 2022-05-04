@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UserService.Models;
+using Shared.Models.User;
 
 namespace UserService.Context
 {
@@ -28,9 +28,7 @@ namespace UserService.Context
 //                }
 //                else
 //                {
-//#pragma warning disable CS8602 // Dereference of a possibly null reference.
 //                    optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db-connection-string").Replace("DATABASE_NAME", "message-service_db"));
-//#pragma warning restore CS8602 // Dereference of a possibly null reference.
 //                }
 //            }
             
@@ -43,8 +41,8 @@ namespace UserService.Context
             base.OnConfiguring(optionsBuilder);
         }
 
-        public DbSet<ApplicationUser>? Users { get; set; }
-        public DbSet<Follow>? Followers { get; set; }
+        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<Follow> Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,37 +50,14 @@ namespace UserService.Context
             modelBuilder.Entity<Follow>().ToTable("Follower");
 
             modelBuilder.Entity<ApplicationUser>()
-            .Property(f => f.Id)
-            .ValueGeneratedOnAdd();
-
-
-            modelBuilder.Entity<ApplicationUser>()
                 .HasData(
-                    new ApplicationUser()
-                    {
-                        Id = 1,
-                        Username = "a",
-                        Name = "Jan",
-                        Bio = "I am a programmer",
-                    },
-                    new ApplicationUser()
-                    {
-                        Id = 2,
-                        Username = "b",
-                        Name = "Piet",
-                        Bio = "I am a chef",
-                    }
+                    new ApplicationUser("username", "name", "bio", "base64string"),
+                    new ApplicationUser("username2", "name2", "bio2", "base64string2")
                 );
 
-            modelBuilder.Entity<Follow>()
-              .HasData(
-                  new Follow()
-                  {
-                      Id = 1,
-                      Username = "a",
-                      UsernameToFollow = "b"
-                  }
-              );
+            modelBuilder.Entity<ApplicationUser>()
+            .Property(f => f.Id)
+            .ValueGeneratedOnAdd();
         }
 
     }

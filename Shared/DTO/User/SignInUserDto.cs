@@ -1,4 +1,4 @@
-﻿namespace AuthenticationService.Models
+﻿namespace Shared.DTO.User
 {
     public class SignInUserDto
     {

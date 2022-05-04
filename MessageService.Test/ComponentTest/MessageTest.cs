@@ -1,6 +1,5 @@
 using MessageService.Context;
 using MessageService.Controllers;
-using MessageService.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
