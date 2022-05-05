@@ -8,10 +8,10 @@ namespace Shared.DTO.Message
 {
     internal class UpdateMessage
     {
-        public Guid? Description { get; set; }
+        public Guid Description { get; set; }
 
-        public string? Image { get; set; }
+        public string Image { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

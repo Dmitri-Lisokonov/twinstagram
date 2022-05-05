@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO.RabbitMQ;
 using Shared.DTO.Response;
 using Shared.DTO.User;
+using Shared.Messaging;
 using Shared.Models.User;
 using System.Security.Claims;
 using UserService.Context;
@@ -16,7 +18,7 @@ namespace UserService.Controllers
     {
         private readonly UserServiceDatabaseContext _dbContext;
         private readonly Mapper _mapper;
-
+        
         public UserController(UserServiceDatabaseContext dbContext)
         {
             _dbContext = dbContext;
@@ -29,10 +31,9 @@ namespace UserService.Controllers
 
             _mapper = new Mapper(config);
         }
-
-     
+         
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetUser(string username)
         {
             var user = await _dbContext.Users
@@ -41,7 +42,19 @@ namespace UserService.Controllers
             if (user is not null)
             {
                 var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(user);
-                return Ok(userDto);
+
+                var followerCount = _dbContext.Followers
+                    .Where(x => x.FollowUserId == user.Id)
+                    .Count();
+
+                var followingCount = _dbContext.Followers
+                    .Where(x => x.UserId == user.Id)
+                    .Count();
+
+                userDto.FollowerCount = followerCount;
+                userDto.FollowingCount = followingCount;
+
+                return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
             }
             else
             {
@@ -51,7 +64,7 @@ namespace UserService.Controllers
 
         
         [HttpGet("Followers")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetUserFollowers(string username)
         {
             //get user
@@ -83,7 +96,7 @@ namespace UserService.Controllers
                         }
                     }
                 }
-                return Ok(followerList);
+                return Ok(new ResponseMessage<List<ApplicationUserDto>>(followerList, ResponseStatus.Success.ToString()));
             }
             else
             {
@@ -93,7 +106,7 @@ namespace UserService.Controllers
 
         
         [HttpGet("Following")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetUserFollowing(string username)
         {
             var user = await _dbContext.Users
@@ -119,7 +132,7 @@ namespace UserService.Controllers
                     }
                 }
 
-                return Ok(followingList);
+                return Ok(new ResponseMessage<List<ApplicationUserDto>>(followingList, ResponseStatus.Success.ToString()));
             }
             else
             {
@@ -129,10 +142,16 @@ namespace UserService.Controllers
 
         
         [HttpGet("Follow")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> FollowUser(Guid userId)
         {
             var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            if(Guid.Parse(currentUserId) == userId)
+            {
+                return BadRequest(new ResponseMessage<string>("You cannot follow yourself", ResponseStatus.BadRequest.ToString()));
+            }
+            
             var currentUserGuid = Guid.Parse(currentUserId);
             var alreadyFollowing = await _dbContext.Followers
                 .FirstOrDefaultAsync(x => x.UserId == currentUserGuid && x.FollowUserId == userId);

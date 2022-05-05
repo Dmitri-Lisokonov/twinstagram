@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTO.Response;
 using Shared.DTO.User;
 using Shared.Models.User;
+using Shared.Messaging;
+using Shared.DTO.RabbitMQ;
 
 namespace AuthenticationService.Controllers
 {
@@ -19,12 +21,14 @@ namespace AuthenticationService.Controllers
         private readonly ILogger<AuthenticationController> _logger;
         private readonly Mapper _mapper;
         private JwtBuilder _jwtBuilder;
+        private MessagePublisher _publisher;
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
             UserManager<AuthenticationUser> userManager,
             SignInManager<AuthenticationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
+            MessagePublisher publisher,
             IConfiguration config
             )
         {
@@ -32,6 +36,7 @@ namespace AuthenticationService.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _publisher = publisher;
             _jwtBuilder = new JwtBuilder();
 
             var mapperConfig = new MapperConfiguration(cfg =>
@@ -43,11 +48,18 @@ namespace AuthenticationService.Controllers
             _mapper = new Mapper(mapperConfig);
       
         }
+        
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            _publisher.SendMessage("Hello World!");
+            return Ok();
+        }
 
         [HttpPost]
         [Authorize]
         [Route("Register")]
-        public async Task<ActionResult> CreateUser([FromBody] RegisterUserDto model)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto model)
         {
             if (ModelState.IsValid)
             {
@@ -71,7 +83,7 @@ namespace AuthenticationService.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<ActionResult> SignInUser([FromBody] SignInUserDto model)
+        public async Task<IActionResult> SignInUser([FromBody] SignInUserDto model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
             if (result.Succeeded)
@@ -91,7 +103,7 @@ namespace AuthenticationService.Controllers
         //[Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("Createrole")]
-        public async Task<ActionResult> CreateUserRole()
+        public async Task<IActionResult> CreateUserRole()
         {
             var role = new IdentityRole();
             role.Name = "User";
@@ -102,7 +114,7 @@ namespace AuthenticationService.Controllers
         //[Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("Promote/{id}")]
-        public async Task<ActionResult> AddUserToRole(string id)
+        public async Task<IActionResult> AddUserToRole(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             var result = await _userManager.AddToRoleAsync(user, "User");
@@ -112,7 +124,7 @@ namespace AuthenticationService.Controllers
         //[Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("Delete")]
-        public async Task<ActionResult> DeleteUser()
+        public async Task<IActionResult> DeleteUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (user is not null)
@@ -129,14 +141,14 @@ namespace AuthenticationService.Controllers
         [HttpGet]
         [Authorize]
         [Route("Logout")]
-        public async Task<ActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return Ok(new ResponseMessage<string>("User logged out", ResponseStatus.Success.ToString()));
         }
 
         [HttpGet]
-        public async Task<ActionResult> IsLoggedIn()
+        public async Task<IActionResult> IsLoggedIn()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (user is not null)

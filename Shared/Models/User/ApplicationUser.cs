@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Models.User
 {
@@ -6,7 +7,7 @@ namespace Shared.Models.User
     {
         [Key, Required]
         public Guid Id { get; private set; }
-        
+
         [Required]
         public string Username { get; private set; }
         

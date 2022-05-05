@@ -46,19 +46,27 @@ namespace UserService.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ApplicationUser>().ToTable("User");
-            modelBuilder.Entity<Follow>().ToTable("Follower");
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+            
+            modelBuilder.Entity<Follow>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(x => x.Username)
+                .IsUnique();
 
             modelBuilder.Entity<ApplicationUser>()
                 .HasData(
                     new ApplicationUser("username", "name", "bio", "base64string"),
                     new ApplicationUser("username2", "name2", "bio2", "base64string2")
                 );
-
-            modelBuilder.Entity<ApplicationUser>()
-            .Property(f => f.Id)
-            .ValueGeneratedOnAdd();
         }
-
     }
 }

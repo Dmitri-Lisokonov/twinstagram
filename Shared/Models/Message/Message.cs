@@ -13,7 +13,7 @@ namespace Shared.Models.Message
         public string Description { get; private set; }
 
         [Required]
-        public string? Image { get; private set; }
+        public string Image { get; private set; }
 
         [Required]
         public DateTime CreatedDate { get; private set; }

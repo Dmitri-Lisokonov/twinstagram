@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.DTO.RabbitMQ;
+using Shared.Messaging;
 using System.Text;
 using UserService.Context;
 using UserService.Utility;
@@ -22,6 +24,8 @@ builder.Services.AddCors(options => {
                    .AllowAnyHeader();
         });
 });
+
+builder.Services.AddMessagingService(null, new ConsumeQueue("UserService"));
 
 // Add JWT authentication
 builder.Services.AddAuthentication(option => {

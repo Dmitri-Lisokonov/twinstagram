@@ -41,9 +41,16 @@ namespace MessageService.Context
         }
 
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>().ToTable("Message");
+            
+            modelBuilder.Entity<Message>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
         }
 
     }
