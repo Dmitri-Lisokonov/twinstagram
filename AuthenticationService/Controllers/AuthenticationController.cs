@@ -52,7 +52,11 @@ namespace AuthenticationService.Controllers
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
-            _publisher.SendMessage("Hello World!");
+            await _publisher.SendMessage(new RabbitMqMessage
+            {
+                MessageAction = MessageAction.Register,
+                Data = "Fuck me"
+            });
             return Ok();
         }
 
