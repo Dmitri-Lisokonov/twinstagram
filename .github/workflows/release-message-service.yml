@@ -10,6 +10,7 @@ on:
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
