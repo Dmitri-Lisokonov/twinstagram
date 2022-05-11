@@ -7,7 +7,7 @@ on:
     paths:
       - "MessageService/**"
       - ".github/workflows/release-message-service.yml"
-      - "Dockerfile_MessageService"
+      - "./Dockerfile_MessageService"
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
 

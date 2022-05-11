@@ -7,7 +7,7 @@ on:
     paths:
       - "OcelotAPIGateway/**"
       - ".github/workflows/release-ocelot.yml"
-      - "Dockerfile_OcelotGateway"
+      - "./Dockerfile_OcelotGateway"
 env:
   PROJECT_PATH: 'OcelotAPIGateway/OcelotAPIGateway.csproj'
 
