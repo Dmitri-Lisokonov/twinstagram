@@ -31,7 +31,7 @@
           "Port": 7264
         }
       ],
-      "UpstreamPathTemplate": "/api/user{everything}"
+      "UpstreamPathTemplate": "/user{everything}"
     },
     {
       "DownstreamPathTemplate": "/user",
@@ -42,7 +42,7 @@
           "Port": 7264
         }
       ],
-      "UpstreamPathTemplate": "/api/user"
+      "UpstreamPathTemplate": "/user"
     },
     {
       "DownstreamPathTemplate": "/authentication",

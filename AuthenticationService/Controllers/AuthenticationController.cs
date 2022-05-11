@@ -52,7 +52,7 @@ namespace AuthenticationService.Controllers
         }
 
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto model)
         {
             if (ModelState.IsValid)
@@ -80,7 +80,7 @@ namespace AuthenticationService.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> SignInUser([FromBody] SignInUserDto model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
@@ -100,7 +100,7 @@ namespace AuthenticationService.Controllers
 
         //[Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("Createrole")]
+        [Route("createrole")]
         public async Task<IActionResult> CreateUserRole()
         {
             var role = new IdentityRole();
@@ -111,7 +111,7 @@ namespace AuthenticationService.Controllers
 
         //[Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("Promote/{id}")]
+        [Route("promote/{id}")]
         public async Task<IActionResult> AddUserToRole(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -121,7 +121,7 @@ namespace AuthenticationService.Controllers
 
         //[Authorize(Roles = "Admin")]
         [HttpDelete]
-        [Route("Delete")]
+        [Route("delete")]
         public async Task<IActionResult> DeleteUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -138,7 +138,7 @@ namespace AuthenticationService.Controllers
 
         [HttpGet]
         [Authorize]
-        [Route("Logout")]
+        [Route("logout")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

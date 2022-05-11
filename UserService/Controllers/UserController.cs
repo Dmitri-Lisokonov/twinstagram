@@ -83,7 +83,7 @@ namespace UserService.Controllers
         }
 
         
-        [HttpGet("Followers")]
+        [HttpGet("followers")]
         [Authorize]
         public async Task<IActionResult> GetUserFollowers(Guid userId)
         {
@@ -125,7 +125,7 @@ namespace UserService.Controllers
         }
 
         
-        [HttpGet("Following")]
+        [HttpGet("following")]
         [Authorize]
         public async Task<IActionResult> GetUserFollowing(Guid userId)
         {
@@ -161,7 +161,7 @@ namespace UserService.Controllers
         }
 
         
-        [HttpGet("Follow")]
+        [HttpGet("follow")]
         [Authorize]
         public async Task<IActionResult> FollowUser(Guid userId)
         {
