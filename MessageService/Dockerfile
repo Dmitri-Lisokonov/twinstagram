@@ -6,7 +6,6 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["MessageService.csproj", "MessageService/"]
-COPY ["Shared.csproj", "Shared/"]
 RUN dotnet restore "MessageService/MessageService.csproj"
 WORKDIR "/src/MessageService"
 COPY . .
