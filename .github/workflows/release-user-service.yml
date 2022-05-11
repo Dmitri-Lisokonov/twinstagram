@@ -3,7 +3,7 @@ name: Release new UserService to Docker hub
 on:
   push:
     branches:
-      - development
+      - main
     paths:
       - "UserService/**"
       - ".github/workflows/release-user-service.yml"

@@ -3,7 +3,7 @@ name: Release new MessageService to Docker hub
 on:
   push:
     branches:
-      - development
+      - main
     paths:
       - "MessageService/**"
       - ".github/workflows/release-message-service.yml"
