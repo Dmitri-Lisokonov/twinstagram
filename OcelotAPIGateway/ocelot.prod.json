@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/message{everything}",
+      "DownstreamPathTemplate": "api/message{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -12,7 +12,7 @@
       "UpstreamPathTemplate": "/message{everything}"
     },
     {
-      "DownstreamPathTemplate": "/authentication{everything}",
+      "DownstreamPathTemplate": "api/authentication{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -23,7 +23,7 @@
       "UpstreamPathTemplate": "/authentication{everything}"
     },
     {
-      "DownstreamPathTemplate": "/user{everything}",
+      "DownstreamPathTemplate": "api/user{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -34,7 +34,7 @@
       "UpstreamPathTemplate": "/user{everything}"
     },
     {
-      "DownstreamPathTemplate": "/user",
+      "DownstreamPathTemplate": "api/user",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -45,7 +45,7 @@
       "UpstreamPathTemplate": "/user"
     },
     {
-      "DownstreamPathTemplate": "/authentication",
+      "DownstreamPathTemplate": "api/authentication",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -56,7 +56,7 @@
       "UpstreamPathTemplate": "/authentication"
     },
     {
-      "DownstreamPathTemplate": "/message",
+      "DownstreamPathTemplate": "api/message",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
