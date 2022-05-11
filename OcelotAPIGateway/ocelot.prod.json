@@ -2,7 +2,7 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/message{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "message-service",
@@ -13,7 +13,7 @@
     },
     {
       "DownstreamPathTemplate": "/authentication{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "authentication-service",
@@ -24,7 +24,7 @@
     },
     {
       "DownstreamPathTemplate": "/user{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "user-service",
@@ -35,7 +35,7 @@
     },
     {
       "DownstreamPathTemplate": "/user",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "user-service",
@@ -46,7 +46,7 @@
     },
     {
       "DownstreamPathTemplate": "/authentication",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "authentication-service",
@@ -57,7 +57,7 @@
     },
     {
       "DownstreamPathTemplate": "/message",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "message-service",
