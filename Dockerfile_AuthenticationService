@@ -6,9 +6,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["AuthenticationService.csproj", "AuthenticationService/"]
-COPY ["Shared.csproj", "Shared/"]
 RUN dotnet restore "AuthenticationService/AuthenticationService.csproj"
-RUN dotnet restore "Shared/Shared.csproj"
 WORKDIR "/src/AuthenticationService"
 COPY . .
 RUN dotnet build "AuthenticationService.csproj" -c Release -o /app/build
