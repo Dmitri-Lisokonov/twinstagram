@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "MessageService/**"
+      - "MessageService/MessageService/**"
       - ".github/workflows/release-message-service.yml"
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
