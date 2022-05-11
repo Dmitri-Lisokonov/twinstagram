@@ -42,6 +42,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         file: Dockerfile_MessageService
-        context: MessageService
+        context: ./
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/twinstagram-message-service:latest
