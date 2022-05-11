@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "api/message{everything}",
+      "DownstreamPathTemplate": "/message{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -9,10 +9,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/message{everything}"
+      "UpstreamPathTemplate": "api/message{everything}"
     },
     {
-      "DownstreamPathTemplate": "api/authentication{everything}",
+      "DownstreamPathTemplate": "/authentication{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -20,10 +20,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/authentication{everything}"
+      "UpstreamPathTemplate": "api/authentication{everything}"
     },
     {
-      "DownstreamPathTemplate": "api/user{everything}",
+      "DownstreamPathTemplate": "/user{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -31,10 +31,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/user{everything}"
+      "UpstreamPathTemplate": "api/user{everything}"
     },
     {
-      "DownstreamPathTemplate": "api/user",
+      "DownstreamPathTemplate": "/user",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -42,10 +42,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/user"
+      "UpstreamPathTemplate": "api/user"
     },
     {
-      "DownstreamPathTemplate": "api/authentication",
+      "DownstreamPathTemplate": "/authentication",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -53,10 +53,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/authentication"
+      "UpstreamPathTemplate": "api/authentication"
     },
     {
-      "DownstreamPathTemplate": "api/message",
+      "DownstreamPathTemplate": "/message",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -64,7 +64,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/message"
+      "UpstreamPathTemplate": "api/message"
     }
   ],
   "GlobalConfiguration": {
