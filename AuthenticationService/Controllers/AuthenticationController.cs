@@ -1,143 +1,161 @@
-using AuthenticationService.Models;
-using AuthenticationService.Utility;
+using AuthenticationService.Util;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTO.Response;
+using Shared.DTO.User;
+using Shared.Models.User;
+using Shared.Messaging;
+using Shared.DTO.RabbitMQ;
+using System.Text.Json;
 
 namespace AuthenticationService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<AuthenticationUser> _userManager;
+        private readonly SignInManager<AuthenticationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthenticationController> _logger;
-        private JwtMiddleware _jwtMiddleware;
+        private readonly Mapper _mapper;
+        private JwtBuilder _jwtBuilder;
+        private MessagePublisher _publisher;
 
         public AuthenticationController(
-            ILogger<AuthenticationController> logger, 
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            ILogger<AuthenticationController> logger,
+            UserManager<AuthenticationUser> userManager,
+            SignInManager<AuthenticationUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration config            
+            MessagePublisher publisher,
+            IConfiguration config
             )
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _jwtMiddleware = new JwtMiddleware(config);
-    }
+            _publisher = publisher;
+            _jwtBuilder = new JwtBuilder();
+
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<RegisterUserDto, AuthenticationUser>();
+                cfg.CreateMap<AuthenticationUser, ApplicationUserDto>();
+            });
+
+            _mapper = new Mapper(mapperConfig);
+      
+        }
 
         [HttpPost]
-        [Route("create")]
-        public async Task<ActionResult> CreateUser([FromBody] RegisterUserModel model)
+        [Route("Register")]
+        public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto model)
         {
-            var user = new User();
-            user.UserName = "HelloIdentity";
-            var result = await _userManager.CreateAsync(user, "123Welkom!");
-            return Ok(result);
+            if (ModelState.IsValid)
+            {
+                var user = _mapper.Map<AuthenticationUser>(model);
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                    var createdUser = await _userManager.FindByNameAsync(user.UserName);
+                    var userDto = _mapper.Map<ApplicationUserDto>(createdUser);
+                    var message = new RabbitMqMessage(MessageAction.Register, JsonSerializer.Serialize(userDto));
+                    await _publisher.SendMessage(message);
+                    return Ok(new ResponseMessage<string>("User created successfully", ResponseStatus.Success.ToString()));
+                }
+                else
+                {
+                    return BadRequest(new ResponseMessage<string>(result.ToString(), ResponseStatus.BadRequest.ToString()));
+                }
+            }
+            else
+            {
+                return BadRequest(new ResponseMessage<string>("Invalid user input", ResponseStatus.BadRequest.ToString()));
+            }
         }
-        
+
         [HttpPost]
-        // sign in user
-        [Route("login")]
-        public async Task<ActionResult> SignInUser([FromBody] SignInUserModel model)
+        [Route("Login")]
+        public async Task<IActionResult> SignInUser([FromBody] SignInUserDto model)
         {
-         
             var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 var roles = await _userManager.GetRolesAsync(user);
-                var token = _jwtMiddleware.GenerateJSONWebToken(roles);
-                HttpContext.Response.Headers.Add("Access-Token", token);
+                var userDto = _mapper.Map<ApplicationUserDto>(user);
+                userDto.Token = _jwtBuilder.GenerateToken(user, roles);
+                return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized(new ResponseMessage<string>("User unauthorized", ResponseStatus.Unauthorized.ToString()));
             }
-            return Ok(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("createrole")]
-        // create a role
-        public async Task<ActionResult> CreateUserRole()
+        [Route("Createrole")]
+        public async Task<IActionResult> CreateUserRole()
         {
             var role = new IdentityRole();
             role.Name = "User";
             var result = await _roleManager.CreateAsync(role);
             return Ok(result);
         }
-        
-        [Authorize(Roles = "Admin")]
+
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("promote/{id}")]
-        // add a user to a role
-        public async Task<ActionResult> AddUserToRole(string id)
+        [Route("Promote/{id}")]
+        public async Task<IActionResult> AddUserToRole(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             var result = await _userManager.AddToRoleAsync(user, "User");
             return Ok(result);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpDelete]
-        [Route("delete")]
-        public async Task<ActionResult> DeleteUser()
+        [Route("Delete")]
+        public async Task<IActionResult> DeleteUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (user is not null)
             {
                 var result = await _userManager.DeleteAsync(user);
-                return Ok(result);
+                return Ok(new ResponseMessage<string>("User has been deleted", ResponseStatus.Success.ToString()));
             }
             else
             {
-                return BadRequest();
+                return NotFound(new ResponseMessage<string>("User not found", ResponseStatus.BadRequest.ToString()));
             }
         }
 
         [HttpGet]
-        [Route("logout")]
-        public async Task<ActionResult> Logout()
+        [Authorize]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return Ok();
+            return Ok(new ResponseMessage<string>("User logged out", ResponseStatus.Success.ToString()));
         }
 
-        // check if user is logged in
         [HttpGet]
-        public async Task<ActionResult> IsLoggedIn()
+        public async Task<IActionResult> IsLoggedIn()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            if(user is not null)
+            if (user is not null)
             {
-                return Ok();
+                return Ok(new ResponseMessage<string>("User is logged in", ResponseStatus.Success.ToString()));
             }
             else
             {
-                return Unauthorized();
+                return Unauthorized(new ResponseMessage<string>("User is not logged in", ResponseStatus.Unauthorized.ToString()));
             }
         }
-
-
-        [HttpGet]
-        [Route("jwt")]
-        public ActionResult CheckJwt()
-        {
-            var results = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
-            if (results is not null)
-            {
-                return Ok(results.Value);
-            }
-            {
-                return BadRequest();
-            }
-        }
-
     }
 }

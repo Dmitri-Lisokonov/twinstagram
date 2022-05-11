@@ -16,6 +16,17 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "OcelotAPIGateway", Version = "v1" });
 });
 
+// Add CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +43,8 @@ else
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OcelotAPIGateway v1"));
     builder.Configuration.AddJsonFile($"ocelot.dev.json");
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

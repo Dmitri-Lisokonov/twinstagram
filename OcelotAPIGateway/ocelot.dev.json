@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/message/{everything}",
+      "DownstreamPathTemplate": "/message{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -9,10 +9,10 @@
           "Port": 7039
         }
       ],
-      "UpstreamPathTemplate": "api/message/{everything}"
+      "UpstreamPathTemplate": "/message{everything}"
     },
     {
-      "DownstreamPathTemplate": "/authentication/{everything}",
+      "DownstreamPathTemplate": "/authentication{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -20,10 +20,10 @@
           "Port": 7225
         }
       ],
-      "UpstreamPathTemplate": "api/authentication/{everything}"
+      "UpstreamPathTemplate": "/authentication{everything}"
     },
     {
-      "DownstreamPathTemplate": "/user/{everything}",
+      "DownstreamPathTemplate": "/user{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -31,7 +31,40 @@
           "Port": 7264
         }
       ],
-      "UpstreamPathTemplate": "api/user/{everything}"
+      "UpstreamPathTemplate": "/user{everything}"
+    },
+    {
+      "DownstreamPathTemplate": "/user",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7264
+        }
+      ],
+      "UpstreamPathTemplate": "/user"
+    },
+    {
+      "DownstreamPathTemplate": "/authentication",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7225
+        }
+      ],
+      "UpstreamPathTemplate": "/authentication"
+    },
+    {
+      "DownstreamPathTemplate": "/message",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7039
+        }
+      ],
+      "UpstreamPathTemplate": "/message"
     }
   ],
   "GlobalConfiguration": {
