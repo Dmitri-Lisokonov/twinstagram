@@ -1,112 +1,118 @@
-﻿using MessageService.Context;
-using MessageService.Models;
+﻿using AutoMapper;
+using MessageService.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Shared.DTO.Message;
+using Shared.DTO.Response;
+using Shared.Models.Message;
+using System.Security.Claims;
 
 namespace MessageService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class MessageController : Controller
     {
         private readonly MessageServiceDatabaseContext _dbContext;
+        private readonly Mapper _mapper;
 
         public MessageController(MessageServiceDatabaseContext dbContext)
         {
             _dbContext = dbContext;
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Message, MessageDto>();
+                cfg.CreateMap<MessageDto, Message>();
+                cfg.CreateMap<CreateMessage, Message>();
+            });
+
+            _mapper = new Mapper(config);
         }
 
-        [HttpGet("user/{userId}")]
-        //TODO: Considering removing List and return just the Message
-        public async Task<ActionResult<IEnumerable<List<Message>>>> GetMessages(int userId)
+        [HttpGet("user")]
+        [Authorize]
+        public async Task<IActionResult> GetMessages(Guid userId)
         {
-#pragma warning disable CS8604 // Possible null reference argument.
+
             var messages = await _dbContext.Messages
                .Where(x => x.UserId == userId)
                .ToListAsync();
-#pragma warning restore CS8604 // Possible null reference argument.
+
+            var messagesDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(messages);
 
             if (messages.Any())
             {
-                return Ok(messages);
+                return Ok(new ResponseMessage<IEnumerable<MessageDto>>(messagesDto, ResponseStatus.Success.ToString()));
             }
             else
             {
-                return Ok("No messages found");
+                return Ok(new ResponseMessage<string>("No messages found", ResponseStatus.NotFound.ToString()));
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewMessage(Message message)
+        [Authorize]
+        public async Task<IActionResult> CreateNewMessage(CreateMessage message)
         {
-            //TODO: Add Authentication
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             message.CreatedDate = DateTime.Now;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            await _dbContext.Messages.AddAsync(message);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            var result = await _dbContext.SaveChangesAsync();
+            message.UserId = Guid.Parse(currentUserId);
+            message.Username = currentUserName;
+            var messageToCreate = _mapper.Map<Message>(message);
+            await _dbContext.Messages.AddAsync(messageToCreate);
+            await _dbContext.SaveChangesAsync();
+            return Ok(new ResponseMessage<string>("message created", ResponseStatus.Success.ToString()));
 
-            if (result > 0)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("Something went wrong creating the message... Please try again");
-            }
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteMessage(Message message)
+        [Authorize]
+        public async Task<IActionResult> DeleteMessage(MessageDto message)
         {
-            //TODO: Add Authentication
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            _dbContext.Messages.Remove(message);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            var result = await _dbContext.SaveChangesAsync();
-
-            if(result > 0)
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound("The message you want to delete was not found");
-            }
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Does this work?
+            message.UserId = Guid.Parse(currentUserId);
+            var messageToDelete = _mapper.Map<Message>(message);
+            _dbContext.Messages.Remove(messageToDelete);
+            // Check if messages was deleted otherwise send reponse that it was not deleted
+            await _dbContext.SaveChangesAsync();
+            return Ok(new ResponseMessage<string>("Your message has been deleted", ResponseStatus.Success.ToString()));
         }
 
-        [HttpPost("/feed/{userId}")]
-        public async Task<ActionResult<IEnumerable<List<Message>>>> GetAllFollowerMessages(List<int> followingIdList)
+        [HttpPost("feed")]
+        [Authorize]
+        public async Task<IActionResult> GetFeed(List<Guid> followingIdList)
         {
-            //TODO: Add Authentication
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Fix this method ->  Get Following for user -> Get Messages of following
             List<Message> feed = new List<Message>();
 
-            if(followingIdList is null)
+            if (followingIdList is null)
             {
-                return BadRequest("Request is suposed to include a list of follower IDs");
+                return BadRequest(new ResponseMessage<string>("You are not following anyone yet", ResponseStatus.Error.ToString()));
             }
-            else if(followingIdList.Count > 0)
+            else if (followingIdList.Count > 0)
             {
                 foreach (var followingId in followingIdList)
                 {
-#pragma warning disable CS8604 // Possible null reference argument.
                     var messages = await _dbContext.Messages
                         .Where(x => x.UserId == followingId)
                         .ToListAsync();
-#pragma warning restore CS8604 // Possible null reference argument.
 
                     feed.AddRange(messages);
                 }
 
                 List<Message> sortedFeed = feed.OrderBy(o => o.CreatedDate).ToList();
-                return Ok(feed);
+                var sortedFeedDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(sortedFeed);
+                return Ok(new ResponseMessage<IEnumerable<MessageDto>>(sortedFeedDto, ResponseStatus.Success.ToString()));
             }
             else
             {
-                return Ok("You aren't following any accounts");
+                return NotFound(new ResponseMessage<string>("You are not following anyone yet", ResponseStatus.NotFound.ToString()));
             }
-  
+
         }
     }
 }

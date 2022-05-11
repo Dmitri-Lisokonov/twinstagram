@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.Messaging;
 using System.Text;
 using UserService.Context;
+using UserService.MessageHandler;
 using UserService.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddDbContext<UserServiceDatabaseContext>();
 
 // Add CORS
 builder.Services.AddCors(options => {
@@ -22,18 +25,28 @@ builder.Services.AddCors(options => {
         });
 });
 
+// Configure RabbitMQ messaging and message handler
+ConsumeQueue consumeQueue = new ConsumeQueue(QueueName.UserService);
+MessagingQueueList queues = new MessagingQueueList();
+queues.AddConsumeQueue(consumeQueue);
+IMessageHandler handler = new UserMessagingHandler(new UserServiceDatabaseContext());
+builder.Services.AddMessagingService<IMessageHandler>(queues, handler);
+
 // Add JWT authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(option => {
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Twinstagram"],
-        ValidAudience = builder.Configuration["Twinstagram"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["MySecretKey"]))
+        ValidIssuer = "http://localhost:5001",
+        ValidAudience = "http://localhost:5001",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MySecretTwinstagramKey"))
     };
 });
 
@@ -77,8 +90,15 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

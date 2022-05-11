@@ -1,15 +1,17 @@
 using AuthenticationService.Context;
-using AuthenticationService.Models;
+using AuthenticationService.MessageHandler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.Messaging;
+using Shared.Models.User;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
+builder.Services.AddDbContext<AuthServiceDatabaseContext>();
 builder.Services.AddEndpointsApiExplorer();
 
 // Add Swagger
@@ -29,6 +31,13 @@ builder.Services.AddCors(options => {
         });
 });
 
+// Configure RabbitMQ messaging and message handler
+PublishQueue publishQueue = new PublishQueue(QueueName.UserService);
+MessagingQueueList queues = new MessagingQueueList();
+queues.AddPublishQueue(publishQueue);
+IMessageHandler handler = new AuthMessagingHandler();
+builder.Services.AddMessagingService(queues, handler);
+
 // Add JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -38,14 +47,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Twinstagram"],
-        ValidAudience = builder.Configuration["Twinstagram"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["MySecretKey"]))
+        ValidIssuer = "http://localhost:5001",
+        ValidAudience = "http://localhost:5001",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MySecretTwinstagramKey"))
     };
 });
 
 //Add Identity
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<AuthenticationUser, IdentityRole>()
       // services.AddDefaultIdentity<IdentityUser>()
       .AddEntityFrameworkStores<AuthServiceDatabaseContext>()
       .AddDefaultTokenProviders();
@@ -87,8 +96,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

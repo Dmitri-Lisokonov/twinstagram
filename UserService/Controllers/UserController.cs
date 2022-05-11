@@ -1,169 +1,200 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO.Response;
+using Shared.DTO.User;
+using Shared.Models.User;
+using System.Security.Claims;
 using UserService.Context;
-using UserService.Models;
-using UserService.Models.DTO;
 
 namespace UserService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UserController : Controller
     {
         private readonly UserServiceDatabaseContext _dbContext;
-
+        private readonly Mapper _mapper;
+        
         public UserController(UserServiceDatabaseContext dbContext)
         {
             _dbContext = dbContext;
-        }
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUser(string username)
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ApplicationUser, ApplicationUserDto>();
+                cfg.CreateMap<ApplicationUser, ApplicationUserDto>();
+            });
+
+            _mapper = new Mapper(config);
+        }
+         
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUser(string username)
         {
-#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
                 .FirstOrDefaultAsync(x => x.Username == username);
-#pragma warning restore CS8604 // Possible null reference argument.
-
-            if (user == null)
-            {
-                return NotFound("No user found with that username");
-            }
-            else
-            {
-                UserDTO userDto = new UserDTO(user.Id, user.Username, user.Name, user.Bio);
-                return Ok(userDto);
-            }
-        }
-        [HttpGet("Followers/{username}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowers(string username)
-        {
-#pragma warning disable CS8604 // Possible null reference argument.
-            var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
-#pragma warning restore CS8604 // Possible null reference argument.
 
             if (user is not null)
             {
-#pragma warning disable CS8604 // Possible null reference argument.
-                var followers = await _dbContext.Followers
-                   .Where(x => x.UsernameToFollow == user.Username)
-                   .ToListAsync();
-#pragma warning restore CS8604 // Possible null reference argument.
+                var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(user);
 
-                List<UserDTO> followerList = new List<UserDTO>();
+                var followerCount = _dbContext.Followers
+                    .Where(x => x.FollowUserId == user.Id)
+                    .Count();
+
+                var followingCount = _dbContext.Followers
+                    .Where(x => x.UserId == user.Id)
+                    .Count();
+                
+                userDto.FollowerCount = followerCount;
+                userDto.FollowingCount = followingCount;
+
+                return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
+            }
+            else
+            {
+                return NotFound(new ResponseMessage<string>("No user found with specified username", ResponseStatus.NotFound.ToString()));
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> updateUser(ApplicationUserDto user)
+        {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
+            var userToUpdate = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == currentUserGuid);
+            if (userToUpdate is not null)
+            {
+                userToUpdate.ProfilePicture = user.ProfilePicture;
+                userToUpdate.Bio = user.Bio;
+                userToUpdate.Name = user.Name;
+                await _dbContext.SaveChangesAsync();
+                var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(userToUpdate);
+                return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
+            }
+            else
+            {
+                return NotFound(new ResponseMessage<string>("Profile update failed: cannot find user", ResponseStatus.NotFound.ToString()));
+            }
+        }
+
+        
+        [HttpGet("Followers")]
+        [Authorize]
+        public async Task<IActionResult> GetUserFollowers(Guid userId)
+        {
+            //get user
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+
+            if (user is not null)
+            {
+                // Get all follows
+                var followers = await _dbContext.Followers
+                   .Where(x => x.FollowUserId == user.Id)
+                   .ToListAsync();
+
+                List<ApplicationUserDto> followerList = new List<ApplicationUserDto>();
 
                 if (followers.Count() > 0)
                 {
+                    // Get users for each follow
                     foreach (var follower in followers)
                     {
                         var result = await _dbContext.Users
-                            .FirstOrDefaultAsync(x => x.Username == follower.Username);
+                            .FirstOrDefaultAsync(x => x.Id == follower.UserId);
 
                         if (result is not null)
                         {
-                            followerList.Add(new UserDTO(result.Id, result.Username, result.Name, result.Bio));
+                            var resultDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(result);
+                            followerList.Add(resultDto);
                         }
                     }
                 }
-                return Ok(followerList);
+                return Ok(new ResponseMessage<List<ApplicationUserDto>>(followerList, ResponseStatus.Success.ToString()));
             }
             else
             {
-                return BadRequest("No user found with that username");
+                return NotFound(new ResponseMessage<string>("No user found with specified username", ResponseStatus.NotFound.ToString()));
             }
         }
 
-        [HttpGet("Following/{username}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> GetUserFollowing(string username)
+        
+        [HttpGet("Following")]
+        [Authorize]
+        public async Task<IActionResult> GetUserFollowing(Guid userId)
         {
-#pragma warning disable CS8604 // Possible null reference argument.
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
-#pragma warning restore CS8604 // Possible null reference argument.
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
-            if(user is not null)
+            if (user is not null)
             {
-#pragma warning disable CS8604 // Possible null reference argument.
                 var following = await _dbContext.Followers
-                .Where(x => x.Username == user.Username)
+                .Where(x => x.UserId == user.Id)
                 .ToListAsync();
-#pragma warning restore CS8604 // Possible null reference argument.
 
-                List<UserDTO> followingList = new List<UserDTO>();
+                List<ApplicationUserDto> followingList = new List<ApplicationUserDto>();
 
-                if (following.Count() > 0)
+                foreach (var follow in following)
                 {
-                    foreach (var follow in following)
-                    {
-                        var result = await _dbContext.Users
-                            .FirstOrDefaultAsync(x => x.Username == follow.UsernameToFollow);
+                    var result = await _dbContext.Users
+                        .FirstOrDefaultAsync(x => x.Id == follow.FollowUserId);
 
-                        if (result is not null)
-                        {
-                            followingList.Add(new UserDTO(result.Id, result.Username, result.Name, result.Bio));
-                        }
+                    if (result is not null)
+                    {
+                        var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(result);
+                        followingList.Add(userDto);
                     }
                 }
-                return Ok(followingList);
+
+                return Ok(new ResponseMessage<List<ApplicationUserDto>>(followingList, ResponseStatus.Success.ToString()));
             }
             else
             {
-                return BadRequest("No user found with that username");
+                return NotFound(new ResponseMessage<string>("No user found with specified username", ResponseStatus.NotFound.ToString()));
             }
         }
 
-        [HttpGet("Follow/{userName}/{followUserName}")]
-        public async Task<ActionResult> FollowUser(string userName, string followUserName)
+        
+        [HttpGet("Follow")]
+        [Authorize]
+        public async Task<IActionResult> FollowUser(Guid userId)
         {
-            //TODO: Add check if user is authenticated
-
-#pragma warning disable CS8604 // Possible null reference argument.
-            var user = await _dbContext.Users
-                 .FirstOrDefaultAsync(x => x.Username == followUserName);
-#pragma warning restore CS8604 // Possible null reference argument.
-
-#pragma warning disable CS8604 // Possible null reference argument.
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
+            
+            if (currentUserGuid == userId)
+            {
+                return BadRequest(new ResponseMessage<string>("You cannot follow yourself", ResponseStatus.BadRequest.ToString()));
+            }
+            
             var alreadyFollowing = await _dbContext.Followers
-                .AnyAsync(x => x.Username == userName && x.UsernameToFollow == followUserName);
-#pragma warning restore CS8604 // Possible null reference argument.
+                .FirstOrDefaultAsync(x => x.UserId == currentUserGuid && x.FollowUserId == userId);
 
-            if (user is not null && !alreadyFollowing)
+            var userExists = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (alreadyFollowing is null && userExists is not null)
             {
-                var result = await _dbContext.Followers.AddAsync(new Follow(userName, followUserName));
+                var result = await _dbContext.Followers.AddAsync(new Follow(currentUserGuid, userId));
                 _dbContext.SaveChanges();
 
-                return Ok();
+                return Ok(new ResponseMessage<string>("You are now following this user", ResponseStatus.Success.ToString()));
             }
-            else if (alreadyFollowing)
+            else if (alreadyFollowing is not null)
             {
-                return BadRequest("You are already following this account");
+                _dbContext.Followers.Remove(alreadyFollowing);
+                await _dbContext.SaveChangesAsync();
+                return Ok(new ResponseMessage<string>("You have unfollowed this user", ResponseStatus.Success.ToString()));
             }
             else
             {
-                return BadRequest("The user you want to follow does not exist");
-            }
-        }
-        [HttpGet("Unfollow/{userName}/{unfollowUserName}")]
-        public async Task<ActionResult<IEnumerable<List<UserDTO>>>> UnfollowUser(string userName, string unfollowUserName)
-        {
-            //TODO: Add check if user is authenticated
-
-#pragma warning disable CS8604 // Possible null reference argument.
-            var unfollowRequest = await _dbContext.Followers
-                .SingleOrDefaultAsync(x => x.Username == userName && x.UsernameToFollow == unfollowUserName);
-#pragma warning restore CS8604 // Possible null reference argument.
-
-            if (unfollowRequest is not null)
-            {
-                _dbContext.Followers.Remove(unfollowRequest);
-                _dbContext.SaveChanges();
-
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("You are not following this user");
+                return NotFound(new ResponseMessage<string>("No user found with specified username", ResponseStatus.NotFound.ToString()));
             }
         }
     }
