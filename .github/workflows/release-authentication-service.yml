@@ -3,7 +3,7 @@ name: Release new AuthenticationService to Docker hub
 on:
   push:
     branches:
-      - main
+      - development
     paths:
       - "AuthenticationService/**"
       - ".github/workflows/release-authentication-service.yml"
