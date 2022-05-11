@@ -1,37 +1,70 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/message/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/message{everything}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "message-service",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "api/message/{everything}"
+      "UpstreamPathTemplate": "/message{everything}"
     },
     {
-      "DownstreamPathTemplate": "/user/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "user-service",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "api/user/{everything}"
-    },
-    {
-      "DownstreamPathTemplate": "/authentication/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/authentication{everything}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "authentication-service",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "api/authentication/{everything}"
+      "UpstreamPathTemplate": "/authentication{everything}"
+    },
+    {
+      "DownstreamPathTemplate": "/user{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/user{everything}"
+    },
+    {
+      "DownstreamPathTemplate": "/user",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "user-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/user"
+    },
+    {
+      "DownstreamPathTemplate": "/authentication",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authentication-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/authentication"
+    },
+    {
+      "DownstreamPathTemplate": "/message",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "message-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/message"
     }
   ],
   "GlobalConfiguration": {
