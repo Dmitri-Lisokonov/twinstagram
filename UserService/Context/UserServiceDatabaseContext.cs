@@ -63,10 +63,9 @@ namespace UserService.Context
                 .IsUnique();
 
             modelBuilder.Entity<ApplicationUser>()
-                .HasData(
-                    new ApplicationUser("username", "name", "bio", "base64string"),
-                    new ApplicationUser("username2", "name2", "bio2", "base64string2")
-                );
+                .Property(f => f.ProfilePicture)
+                .HasDefaultValue("https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg");
+
         }
     }
 }

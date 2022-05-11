@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTO.RabbitMQ;
 using Shared.DTO.Response;
 using Shared.DTO.User;
-using Shared.Messaging;
 using Shared.Models.User;
 using System.Security.Claims;
 using UserService.Context;
@@ -26,14 +24,14 @@ namespace UserService.Controllers
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ApplicationUser, ApplicationUserDto>();
-                cfg.CreateMap<ApplicationUserDto, ApplicationUser>();
+                cfg.CreateMap<ApplicationUser, ApplicationUserDto>();
             });
 
             _mapper = new Mapper(config);
         }
          
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> GetUser(string username)
         {
             var user = await _dbContext.Users
@@ -50,7 +48,7 @@ namespace UserService.Controllers
                 var followingCount = _dbContext.Followers
                     .Where(x => x.UserId == user.Id)
                     .Count();
-
+                
                 userDto.FollowerCount = followerCount;
                 userDto.FollowingCount = followingCount;
 
@@ -62,14 +60,36 @@ namespace UserService.Controllers
             }
         }
 
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> updateUser(ApplicationUserDto user)
+        {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
+            var userToUpdate = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == currentUserGuid);
+            if (userToUpdate is not null)
+            {
+                userToUpdate.ProfilePicture = user.ProfilePicture;
+                userToUpdate.Bio = user.Bio;
+                userToUpdate.Name = user.Name;
+                await _dbContext.SaveChangesAsync();
+                var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(userToUpdate);
+                return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
+            }
+            else
+            {
+                return NotFound(new ResponseMessage<string>("Profile update failed: cannot find user", ResponseStatus.NotFound.ToString()));
+            }
+        }
+
         
         [HttpGet("Followers")]
-        //[Authorize]
-        public async Task<IActionResult> GetUserFollowers(string username)
+        [Authorize]
+        public async Task<IActionResult> GetUserFollowers(Guid userId)
         {
             //get user
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
 
             if (user is not null)
@@ -106,11 +126,11 @@ namespace UserService.Controllers
 
         
         [HttpGet("Following")]
-        //[Authorize]
-        public async Task<IActionResult> GetUserFollowing(string username)
+        [Authorize]
+        public async Task<IActionResult> GetUserFollowing(Guid userId)
         {
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user is not null)
             {
@@ -142,17 +162,17 @@ namespace UserService.Controllers
 
         
         [HttpGet("Follow")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> FollowUser(Guid userId)
         {
             var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
             
-            if(Guid.Parse(currentUserId) == userId)
+            if (currentUserGuid == userId)
             {
                 return BadRequest(new ResponseMessage<string>("You cannot follow yourself", ResponseStatus.BadRequest.ToString()));
             }
             
-            var currentUserGuid = Guid.Parse(currentUserId);
             var alreadyFollowing = await _dbContext.Followers
                 .FirstOrDefaultAsync(x => x.UserId == currentUserGuid && x.FollowUserId == userId);
 

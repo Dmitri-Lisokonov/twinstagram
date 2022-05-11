@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Shared.Models.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -7,16 +8,17 @@ namespace AuthenticationService.Util
 {
     public class JwtBuilder
     {
-		public string GenerateToken(string userId, IList<string> roles)
+		public string GenerateToken(AuthenticationUser user, IList<string> roles)
 		{
 			var mySecret = "MySecretTwinstagramKey";
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
-			var myIssuer = "Twinstagram";
-			var myAudience = "Twinstagram";
+			var myIssuer = "http://localhost:5001";
+			var myAudience = "http://localhost:5001";
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var claims = new List<Claim>();
 
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
 
             foreach (var role in roles)
             {

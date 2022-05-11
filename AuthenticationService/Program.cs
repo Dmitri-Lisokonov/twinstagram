@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AuthServiceDatabaseContext>();
-
 builder.Services.AddEndpointsApiExplorer();
 
 // Add Swagger
@@ -32,8 +31,8 @@ builder.Services.AddCors(options => {
         });
 });
 
-//Configure RabbitMQ Messaging
-PublishQueue publishQueue= new PublishQueue(QueueName.UserService);
+// Configure RabbitMQ messaging and message handler
+PublishQueue publishQueue = new PublishQueue(QueueName.UserService);
 MessagingQueueList queues = new MessagingQueueList();
 queues.AddPublishQueue(publishQueue);
 IMessageHandler handler = new AuthMessagingHandler();
@@ -48,8 +47,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "Twinstagram",
-        ValidAudience = "Twinstagram",
+        ValidIssuer = "http://localhost:5001",
+        ValidAudience = "http://localhost:5001",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MySecretTwinstagramKey"))
     };
 });

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Models.User
 {
@@ -10,21 +11,23 @@ namespace Shared.Models.User
 
         [Required]
         public string Username { get; private set; }
-        
-        [Required]
-        public string Name { get; private set; }
-        
-        public string Bio { get; private set; }
-        
-        public string ProfilePicture { get; private set; }
 
-        public ApplicationUser(string username, string name, string bio, string profilePicture)
+        public string Name { get; set; }
+
+        public string Bio { get; set; }
+
+        [Required]
+        [Column("ProfilePicture", TypeName = "VARCHAR(200)")]
+        public string ProfilePicture { get; set; }
+
+        public ApplicationUser(Guid id, string username, string name, string bio, string profilePicture)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Username = username;
-            Name = name;    
+            Name = name;
             Bio = bio;
             ProfilePicture = profilePicture;
         }
+        
     }
 }

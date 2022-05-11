@@ -8,6 +8,7 @@ using Shared.DTO.User;
 using Shared.Models.User;
 using Shared.Messaging;
 using Shared.DTO.RabbitMQ;
+using System.Text.Json;
 
 namespace AuthenticationService.Controllers
 {
@@ -48,20 +49,8 @@ namespace AuthenticationService.Controllers
             _mapper = new Mapper(mapperConfig);
       
         }
-        
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-            await _publisher.SendMessage(new RabbitMqMessage
-            {
-                MessageAction = MessageAction.Register,
-                Data = "Fuck me"
-            });
-            return Ok();
-        }
 
         [HttpPost]
-        [Authorize]
         [Route("Register")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto model)
         {
@@ -72,11 +61,15 @@ namespace AuthenticationService.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "User");
+                    var createdUser = await _userManager.FindByNameAsync(user.UserName);
+                    var userDto = _mapper.Map<ApplicationUserDto>(createdUser);
+                    var message = new RabbitMqMessage(MessageAction.Register, JsonSerializer.Serialize(userDto));
+                    await _publisher.SendMessage(message);
                     return Ok(new ResponseMessage<string>("User created successfully", ResponseStatus.Success.ToString()));
                 }
                 else
                 {
-                    return BadRequest(new ResponseMessage<string>("Invalid user input", ResponseStatus.BadRequest.ToString()));
+                    return BadRequest(new ResponseMessage<string>(result.ToString(), ResponseStatus.BadRequest.ToString()));
                 }
             }
             else
@@ -95,7 +88,7 @@ namespace AuthenticationService.Controllers
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 var roles = await _userManager.GetRolesAsync(user);
                 var userDto = _mapper.Map<ApplicationUserDto>(user);
-                userDto.Token = _jwtBuilder.GenerateToken(user.Id, roles);
+                userDto.Token = _jwtBuilder.GenerateToken(user, roles);
                 return Ok(new ResponseMessage<ApplicationUserDto>(userDto, ResponseStatus.Success.ToString()));
             }
             else

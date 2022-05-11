@@ -25,11 +25,11 @@ builder.Services.AddCors(options => {
         });
 });
 
-//Configure RabbitMQ Messaging
+// Configure RabbitMQ messaging and message handler
 ConsumeQueue consumeQueue = new ConsumeQueue(QueueName.UserService);
 MessagingQueueList queues = new MessagingQueueList();
 queues.AddConsumeQueue(consumeQueue);
-IMessageHandler handler = new UserMessagingHandler();
+IMessageHandler handler = new UserMessagingHandler(new UserServiceDatabaseContext());
 builder.Services.AddMessagingService<IMessageHandler>(queues, handler);
 
 // Add JWT authentication
@@ -41,11 +41,11 @@ builder.Services.AddAuthentication(option => {
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "Twinstagram",
-        ValidAudience = "Twinstagram",
+        ValidIssuer = "http://localhost:5001",
+        ValidAudience = "http://localhost:5001",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MySecretTwinstagramKey"))
     };
 });

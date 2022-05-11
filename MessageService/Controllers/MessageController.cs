@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Shared.DTO.Message;
 using Shared.DTO.Response;
 using Shared.Models.Message;
+using System.Security.Claims;
 
 namespace MessageService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class MessageController : Controller
     {
         private readonly MessageServiceDatabaseContext _dbContext;
@@ -29,10 +30,11 @@ namespace MessageService.Controllers
             _mapper = new Mapper(config);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user")]
         [Authorize]
         public async Task<IActionResult> GetMessages(Guid userId)
         {
+
             var messages = await _dbContext.Messages
                .Where(x => x.UserId == userId)
                .ToListAsync();
@@ -41,7 +43,7 @@ namespace MessageService.Controllers
 
             if (messages.Any())
             {
-                return Ok(messagesDto);
+                return Ok(new ResponseMessage<IEnumerable<MessageDto>>(messagesDto, ResponseStatus.Success.ToString()));
             }
             else
             {
@@ -53,13 +55,15 @@ namespace MessageService.Controllers
         [Authorize]
         public async Task<IActionResult> CreateNewMessage(CreateMessage message)
         {
-            //TODO: UserId should be taken from the token
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             message.CreatedDate = DateTime.Now;
+            message.UserId = Guid.Parse(currentUserId);
+            message.Username = currentUserName;
             var messageToCreate = _mapper.Map<Message>(message);
-            var createdMessage = await _dbContext.Messages.AddAsync(messageToCreate);
-            var result = await _dbContext.SaveChangesAsync();
-            var createdMessageDto = _mapper.Map<MessageDto>(createdMessage.Entity);
-            return Ok(createdMessageDto);
+            await _dbContext.Messages.AddAsync(messageToCreate);
+            await _dbContext.SaveChangesAsync();
+            return Ok(new ResponseMessage<string>("message created", ResponseStatus.Success.ToString()));
 
         }
 
@@ -67,16 +71,22 @@ namespace MessageService.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteMessage(MessageDto message)
         {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Does this work?
+            message.UserId = Guid.Parse(currentUserId);
             var messageToDelete = _mapper.Map<Message>(message);
             _dbContext.Messages.Remove(messageToDelete);
+            // Check if messages was deleted otherwise send reponse that it was not deleted
             await _dbContext.SaveChangesAsync();
             return Ok(new ResponseMessage<string>("Your message has been deleted", ResponseStatus.Success.ToString()));
         }
 
-        [HttpPost("feed/{userId}")]
+        [HttpPost("feed")]
         [Authorize]
-        public async Task<IActionResult> GetAllFollowerMessages(List<Guid> followingIdList)
+        public async Task<IActionResult> GetFeed(List<Guid> followingIdList)
         {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Fix this method ->  Get Following for user -> Get Messages of following
             List<Message> feed = new List<Message>();
 
             if (followingIdList is null)
@@ -96,7 +106,7 @@ namespace MessageService.Controllers
 
                 List<Message> sortedFeed = feed.OrderBy(o => o.CreatedDate).ToList();
                 var sortedFeedDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(sortedFeed);
-                return Ok(sortedFeedDto);
+                return Ok(new ResponseMessage<IEnumerable<MessageDto>>(sortedFeedDto, ResponseStatus.Success.ToString()));
             }
             else
             {
