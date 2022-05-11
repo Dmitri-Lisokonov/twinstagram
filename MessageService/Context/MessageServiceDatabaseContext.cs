@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Models.Message;
 
+
 namespace MessageService.Context
 {
     public class MessageServiceDatabaseContext : DbContext

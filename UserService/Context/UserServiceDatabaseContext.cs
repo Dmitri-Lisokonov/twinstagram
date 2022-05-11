@@ -5,7 +5,6 @@ namespace UserService.Context
 {
     public class UserServiceDatabaseContext : DbContext
     {
-
         public UserServiceDatabaseContext()
         {
 
