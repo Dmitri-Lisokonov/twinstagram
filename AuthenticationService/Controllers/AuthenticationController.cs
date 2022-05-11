@@ -23,6 +23,7 @@ namespace AuthenticationService.Controllers
         private readonly Mapper _mapper;
         private JwtBuilder _jwtBuilder;
         private MessagePublisher _publisher;
+        
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
