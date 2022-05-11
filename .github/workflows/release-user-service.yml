@@ -7,7 +7,6 @@ on:
     paths:
       - "UserService/**"
       - ".github/workflows/release-user-service.yml"
-      - "./Dockerfile_UserService" 
 env:
   PROJECT_PATH: 'UserService/UserService.csproj'
 

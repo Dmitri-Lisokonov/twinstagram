@@ -6,8 +6,7 @@ on:
       - main
     paths:
       - "AuthenticationService/**"
-      - ".github/workflows/release-authentication-service.yml
-      - "./Dockerfile_AuthenticationService"
+      - ".github/workflows/release-authentication-service.yml"
 env:
   PROJECT_PATH: 'AuthenticationService/AuthenticationService.csproj'
 
