@@ -83,6 +83,23 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 var app = builder.Build();
 
+//Auto generate database tables/seeder
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<UserServiceDatabaseContext>();
+        DatabaseInitializer.Initialize(context);
+        //DatabaseInitializer.DeleteAfter(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred creating the DB.");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
