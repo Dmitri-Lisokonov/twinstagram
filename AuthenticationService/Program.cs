@@ -89,8 +89,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<UserServiceDatabaseContext>();
-        DatabaseInitializer.Initialize(context);
+        var context = services.GetRequiredService<AuthServiceDatabaseContext>();
         //DatabaseInitializer.DeleteAfter(context);
     }
     catch (Exception ex)
