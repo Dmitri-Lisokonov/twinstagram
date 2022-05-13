@@ -18,11 +18,12 @@ namespace Shared.Messaging
                 var endpoints = new List<AmqpTcpEndpoint>
                 {
                     new AmqpTcpEndpoint("rabbitmq"),
-                    new AmqpTcpEndpoint("localhost")
+                    new AmqpTcpEndpoint("localhost"),
+                    new AmqpTcpEndpoint("production-rabbitmqcluster")
                 };
                 var connectionFactory = new ConnectionFactory
                 {
-                    Port = 5672,
+                    Port = AmqpTcpEndpoint.UseDefaultPort,
                     UserName = "guest",
                     Password = "guest"
                 };
