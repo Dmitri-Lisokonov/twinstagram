@@ -7,6 +7,7 @@ on:
     paths:
       - "AuthenticationService/**"
       - ".github/workflows/release-authentication-service.yml"
+      - "Shared/**"
 env:
   PROJECT_PATH: 'AuthenticationService/AuthenticationService.csproj'
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthenticationService.Migrations
 {
     [DbContext(typeof(AuthServiceDatabaseContext))]
-    [Migration("20220513135758_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220513195233_initialcreate")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -9,6 +9,7 @@ on:
       - "AuthenticationService/**"
       - "AuthenticationService.Test/**"
       - ".github/workflows/build-authentication-service.yml"
+      - "Shared/**"
   pull_request:
     branches: 
       - main
@@ -17,6 +18,7 @@ on:
       - "AuthenticationService/**"
       - "AuthenticationService.Test/**"
       - ".github/workflows/build-authentication-service.yml"
+      - "Shared/**"
 env:
   PROJECT_PATH: 'AuthenticationService/AuthenticationService.csproj'
   TEST_PATH: 'AuthenticationService.Test/AuthenticationService.Test.csproj'

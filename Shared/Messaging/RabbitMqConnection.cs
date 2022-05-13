@@ -22,7 +22,7 @@ namespace Shared.Messaging
                 };
                 var connectionFactory = new ConnectionFactory
                 {
-                    Port = AmqpTcpEndpoint.UseDefaultPort,
+                    Port = 15672,
                     UserName = "guest",
                     Password = "guest"
                 };

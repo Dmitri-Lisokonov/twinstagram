@@ -9,6 +9,7 @@ on:
       - "UserService/**"
       - "UserService.Test/**"
       - ".github/workflows/build-user-service.yml"
+      - "Shared/**"
   pull_request:
     branches: 
       - main
@@ -17,6 +18,7 @@ on:
       - "UserService/**"
       - "UserService.Test/**"
       - ".github/workflows/build-user-service.yml"
+      - "Shared/**"
 env:
   PROJECT_PATH: 'UserService/UserService.csproj'
   TEST_PATH: 'UserService.Test/UserService.Test.csproj'
