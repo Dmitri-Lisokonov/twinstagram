@@ -22,7 +22,7 @@ namespace Shared.Messaging
                 };
                 var connectionFactory = new ConnectionFactory
                 {
-                    Port = 15672,
+                    Port = 5672,
                     UserName = "guest",
                     Password = "guest"
                 };
