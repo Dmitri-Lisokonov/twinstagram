@@ -9,6 +9,7 @@ on:
       - "MessageService/**"
       - "MessageService.Test/**"
       - ".github/workflows/build-message-service.yml"
+       - "Shared/**"
   pull_request:
     branches: 
       - main
@@ -17,6 +18,7 @@ on:
       - "MessageService/**"
       - "MessageService.Test/**"
       - ".github/workflows/build-message-service.yml"
+       - "Shared/**"
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
   TEST_PATH: 'MessageService.Test/MessageService.Test.csproj'

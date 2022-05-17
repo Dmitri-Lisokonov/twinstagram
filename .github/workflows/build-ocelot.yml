@@ -8,6 +8,7 @@ on:
     paths:
       - "OcelotAPIGateway/**"
       - ".github/workflows/build-ocelot.yml"
+       - "Shared/**"
   pull_request:
     branches: 
       - main
@@ -15,6 +16,7 @@ on:
     paths:
       - "OcelotAPIGateway/**"
       - ".github/workflows/build-ocelot.yml"
+       - "Shared/**"
 env:
   PROJECT_PATH: 'OcelotAPIGateway/OcelotAPIGateway.csproj'
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_AUTH_SERVICE }}
