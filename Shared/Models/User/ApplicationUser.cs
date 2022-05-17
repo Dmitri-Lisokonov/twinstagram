@@ -16,7 +16,6 @@ namespace Shared.Models.User
 
         public string Bio { get; set; }
         
-        [Column("ProfilePicture", TypeName = "longtext")]
         public string ProfilePicture { get; set; }
 
         public ApplicationUser(Guid id, string username, string name, string bio, string profilePicture)
