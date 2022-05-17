@@ -7,7 +7,7 @@ on:
     paths:
       - "MessageService/**"
       - ".github/workflows/release-message-service.yml"
-       - "Shared/**"
+      - "Shared/**"
 env:
   PROJECT_PATH: 'MessageService/MessageService.csproj'
 
