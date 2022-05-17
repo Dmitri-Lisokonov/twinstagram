@@ -1,4 +1,4 @@
-name: Release new OcelotAPIGateway to Docker hub
+name: Release new OcelotAPIGateway
 
 on:
   push:

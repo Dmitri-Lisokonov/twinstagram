@@ -1,4 +1,4 @@
-name: Release new AuthenticationService to Docker hub
+name: Release new AuthenticationService
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Release new UserService to Docker hub
+name: Release new UserService
 
 on:
   push:
