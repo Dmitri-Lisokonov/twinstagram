@@ -19,7 +19,7 @@ namespace Shared.Messaging
                 {
                     new AmqpTcpEndpoint("rabbitmq"),
                     new AmqpTcpEndpoint("localhost"),
-                    new AmqpTcpEndpoint("10.1.243.195")
+                    new AmqpTcpEndpoint("10.1.243.223")
                 };
                 var connectionFactory = new ConnectionFactory
                 {
