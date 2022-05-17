@@ -18,26 +18,26 @@ namespace UserService.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //Connect to Azure SQL Database if deployed
-            if (!optionsBuilder.IsConfigured)
-            {
-                    var connectionString = Environment.GetEnvironmentVariable("db-connection-string");
-                    if (string.IsNullOrWhiteSpace(connectionString))
-                    {
-                        throw new MissingFieldException("Database environment variable not found.");
-                    }
-                    else
-                    {
-                        optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db-connection-string").Replace("DATABASE_NAME", "user-service_db"));
-                    }
-            }
-
-            //Connect to MySQL database for development
             //if (!optionsBuilder.IsConfigured)
             //{
-            //    optionsBuilder.UseMySQL("server=localhost;Port=3306;uid=admin;pwd=123Welkom!;database=userservice_db;");
+            //        var connectionString = Environment.GetEnvironmentVariable("db-connection-string");
+            //        if (string.IsNullOrWhiteSpace(connectionString))
+            //        {
+            //            throw new MissingFieldException("Database environment variable not found.");
+            //        }
+            //        else
+            //        {
+            //            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("db-connection-string").Replace("DATABASE_NAME", "user-service_db"));
+            //        }
             //}
 
-            //base.OnConfiguring(optionsBuilder);
+            // Connect to MySQL database for development
+            if (!optionsBuilder.IsConfigured)
+                {
+                    optionsBuilder.UseMySQL("server=localhost;Port=3306;uid=admin;pwd=123Welkom!;database=userservice_db;");
+                }
+
+            base.OnConfiguring(optionsBuilder);
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
@@ -60,11 +60,6 @@ namespace UserService.Context
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(x => x.Username)
                 .IsUnique();
-
-            modelBuilder.Entity<ApplicationUser>()
-                .Property(f => f.ProfilePicture)
-                .HasDefaultValue("https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg");
-
         }
     }
 }

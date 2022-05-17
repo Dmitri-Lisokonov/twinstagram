@@ -6,13 +6,9 @@
 
         public Guid UserId { get; set; }
 
-        public string Username { get; set; }
-
         public string Description { get; set; }
 
         public string Image { get; set; }
-
-        public string ProfilePicture { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }

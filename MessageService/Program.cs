@@ -3,7 +3,9 @@ using MessageService.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.Messaging;
 using System.Text;
+using UserService.MessageHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,13 @@ builder.Services.AddCors(options => {
                    .AllowAnyHeader();
         });
 });
+
+// Configure RabbitMQ messaging and message handler
+ConsumeQueue consumeQueue = new ConsumeQueue(QueueName.MessageService);
+MessagingQueueList queues = new MessagingQueueList();
+queues.AddConsumeQueue(consumeQueue);
+IMessageHandler handler = new MessageMessagingHandler(new MessageServiceDatabaseContext());
+builder.Services.AddMessagingService<IMessageHandler>(queues, handler);
 
 // Add JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

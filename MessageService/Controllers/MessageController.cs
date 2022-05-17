@@ -59,7 +59,6 @@ namespace MessageService.Controllers
             var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             message.CreatedDate = DateTime.Now;
             message.UserId = Guid.Parse(currentUserId);
-            message.Username = currentUserName;
             var messageToCreate = _mapper.Map<Message>(message);
             await _dbContext.Messages.AddAsync(messageToCreate);
             await _dbContext.SaveChangesAsync();
@@ -81,30 +80,24 @@ namespace MessageService.Controllers
             return Ok(new ResponseMessage<string>("Your message has been deleted", ResponseStatus.Success.ToString()));
         }
 
-        [HttpPost("feed")]
+        [HttpGet("feed")]
         [Authorize]
-        public async Task<IActionResult> GetFeed(List<Guid> followingIdList)
+        public async Task<IActionResult> GetFeed()
         {
             var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // Fix this method ->  Get Following for user -> Get Messages of following
+            var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             List<Message> feed = new List<Message>();
 
-            if (followingIdList is null)
+            var following = await _dbContext.Followers.Where(x => x.UserId == Guid.Parse(currentUserId)).ToListAsync();
+            if (following.Any())
             {
-                return BadRequest(new ResponseMessage<string>("You are not following anyone yet", ResponseStatus.Error.ToString()));
-            }
-            else if (followingIdList.Count > 0)
-            {
-                foreach (var followingId in followingIdList)
+                foreach (var follower in following)
                 {
-                    var messages = await _dbContext.Messages
-                        .Where(x => x.UserId == followingId)
-                        .ToListAsync();
-
+                    var messages = await _dbContext.Messages.Where(x => x.UserId == follower.FollowUserId).ToListAsync();
                     feed.AddRange(messages);
                 }
 
-                List<Message> sortedFeed = feed.OrderBy(o => o.CreatedDate).ToList();
+                List<Message> sortedFeed = feed.OrderByDescending(o => o.CreatedDate).ToList();
                 var sortedFeedDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(sortedFeed);
                 return Ok(new ResponseMessage<IEnumerable<MessageDto>>(sortedFeedDto, ResponseStatus.Success.ToString()));
             }
@@ -112,7 +105,6 @@ namespace MessageService.Controllers
             {
                 return NotFound(new ResponseMessage<string>("You are not following anyone yet", ResponseStatus.NotFound.ToString()));
             }
-
         }
     }
 }

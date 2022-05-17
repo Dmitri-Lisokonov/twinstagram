@@ -15,9 +15,8 @@ namespace Shared.Models.User
         public string Name { get; set; }
 
         public string Bio { get; set; }
-
-        [Required]
-        [Column("ProfilePicture", TypeName = "VARCHAR(200)")]
+        
+        [Column("ProfilePicture", TypeName = "longtext")]
         public string ProfilePicture { get; set; }
 
         public ApplicationUser(Guid id, string username, string name, string bio, string profilePicture)

@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO.RabbitMQ;
 using Shared.DTO.Response;
 using Shared.DTO.User;
+using Shared.Messaging;
 using Shared.Models.User;
 using System.Security.Claims;
+using System.Text.Json;
 using UserService.Context;
 
 namespace UserService.Controllers
@@ -16,9 +19,11 @@ namespace UserService.Controllers
     {
         private readonly UserServiceDatabaseContext _dbContext;
         private readonly Mapper _mapper;
-        
-        public UserController(UserServiceDatabaseContext dbContext)
+        private MessagePublisher _publisher;
+
+        public UserController(UserServiceDatabaseContext dbContext, MessagePublisher publisher)
         {
+            _publisher = publisher;
             _dbContext = dbContext;
 
             var config = new MapperConfiguration(cfg =>
@@ -27,16 +32,31 @@ namespace UserService.Controllers
                 cfg.CreateMap<ApplicationUser, ApplicationUserDto>();
             });
 
+
             _mapper = new Mapper(config);
         }
          
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetUser(string username)
+        public async Task<IActionResult> GetUser(string username, string userId)
         {
-            var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Username == username);
-
+            ApplicationUser user;
+            
+            if(userId is not null)
+            {
+                var parsedId = Guid.Parse(userId);
+                if (parsedId == Guid.Empty)
+                {
+                    return BadRequest(new ResponseMessage<string>("Invalid user id", ResponseStatus.BadRequest.ToString()));
+                }
+                user = await _dbContext.Users
+                    .FirstOrDefaultAsync(x => x.Id == parsedId);
+            }
+            else
+            {
+                user = await _dbContext.Users
+                    .FirstOrDefaultAsync(x => x.Username == username);
+            }
             if (user is not null)
             {
                 var userDto = _mapper.Map<ApplicationUser, ApplicationUserDto>(user);
@@ -85,11 +105,14 @@ namespace UserService.Controllers
         
         [HttpGet("followers")]
         [Authorize]
-        public async Task<IActionResult> GetUserFollowers(Guid userId)
+        public async Task<IActionResult> GetUserFollowers()
         {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
+            
             //get user
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == userId);
+                .FirstOrDefaultAsync(x => x.Id == currentUserGuid);
 
 
             if (user is not null)
@@ -127,10 +150,13 @@ namespace UserService.Controllers
         
         [HttpGet("following")]
         [Authorize]
-        public async Task<IActionResult> GetUserFollowing(Guid userId)
+        public async Task<IActionResult> GetUserFollowing()
         {
+            var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserGuid = Guid.Parse(currentUserId);
+            
             var user = await _dbContext.Users
-                .FirstOrDefaultAsync(x => x.Id == userId);
+                .FirstOrDefaultAsync(x => x.Id == currentUserGuid);
 
             if (user is not null)
             {
@@ -183,13 +209,14 @@ namespace UserService.Controllers
             {
                 var result = await _dbContext.Followers.AddAsync(new Follow(currentUserGuid, userId));
                 _dbContext.SaveChanges();
-
+                await _publisher.SendMessage(new RabbitMqMessage(MessageAction.Follow, JsonSerializer.Serialize(new Follow(currentUserGuid, userId))));
                 return Ok(new ResponseMessage<string>("You are now following this user", ResponseStatus.Success.ToString()));
             }
             else if (alreadyFollowing is not null)
             {
                 _dbContext.Followers.Remove(alreadyFollowing);
                 await _dbContext.SaveChangesAsync();
+                await _publisher.SendMessage(new RabbitMqMessage(MessageAction.Unfollow, JsonSerializer.Serialize(new Follow(currentUserGuid, userId))));
                 return Ok(new ResponseMessage<string>("You have unfollowed this user", ResponseStatus.Success.ToString()));
             }
             else

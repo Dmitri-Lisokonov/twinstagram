@@ -27,8 +27,10 @@ builder.Services.AddCors(options => {
 
 // Configure RabbitMQ messaging and message handler
 ConsumeQueue consumeQueue = new ConsumeQueue(QueueName.UserService);
+PublishQueue publishQueue = new PublishQueue(QueueName.MessageService);
 MessagingQueueList queues = new MessagingQueueList();
 queues.AddConsumeQueue(consumeQueue);
+queues.AddPublishQueue(publishQueue);
 IMessageHandler handler = new UserMessagingHandler(new UserServiceDatabaseContext());
 builder.Services.AddMessagingService<IMessageHandler>(queues, handler);
 

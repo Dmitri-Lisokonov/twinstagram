@@ -18,9 +18,10 @@ namespace UserService.MessageHandler
         {
             if (message.MessageAction.Equals(MessageAction.Register))
             {
-                var user = JsonSerializer.Deserialize<ApplicationUser>(message.Data);
-                await _Dbcontext.Users.AddAsync(user);
-                await _Dbcontext.SaveChangesAsync();
+   
+                    var user = JsonSerializer.Deserialize<ApplicationUser>(message.Data);
+                    _Dbcontext.Users.Add(user);
+                    var result = _Dbcontext.SaveChanges();
             }
         }
     }
