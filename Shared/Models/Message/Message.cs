@@ -14,7 +14,6 @@ namespace Shared.Models.Message
         public string Description { get; private set; }
 
         [Required]
-        [Column("Image", TypeName = "LONGTEXT")]
         public string Image { get; private set; }
         
         [Required]
