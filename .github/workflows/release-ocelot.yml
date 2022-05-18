@@ -1,4 +1,4 @@
-name: Release new OcelotAPIGateway
+name: Release new OcelotAPIGateway a
 
 on:
   push:

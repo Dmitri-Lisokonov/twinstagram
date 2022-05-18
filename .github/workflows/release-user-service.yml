@@ -1,4 +1,4 @@
-name: Release new UserService
+name: Release new UserService a
 
 on:
   push:

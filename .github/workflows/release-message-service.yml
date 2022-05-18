@@ -1,4 +1,4 @@
-name: Release new MessageService
+name: Release new MessageService a
 
 on:
   push:

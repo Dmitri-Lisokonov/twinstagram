@@ -1,4 +1,4 @@
-name: Release new AuthenticationService
+name: Release new AuthenticationService a
 
 on:
   push:
