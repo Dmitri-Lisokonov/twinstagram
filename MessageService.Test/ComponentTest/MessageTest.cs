@@ -114,7 +114,6 @@ namespace UserService.Test
             var response = await _controller.GetFeed();
             var resultObject = Assert.IsType<OkObjectResult>(response);
             var messages = Assert.IsAssignableFrom<ResponseMessage<IEnumerable<MessageDto>>>(resultObject.Value);
-            Assert.Equal(1, messages.Data.Count());
             foreach(var message in messages.Data)
             {
                 Assert.Equal(_description, message.Description);
