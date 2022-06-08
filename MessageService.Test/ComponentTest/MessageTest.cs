@@ -74,7 +74,7 @@ namespace UserService.Test
             Assert.Equal(4, messages.Data.Count());
             foreach (var message in messages.Data)
             {
-                Assert.Equal(_id, message.UserId);
+                Assert.Equal(_description, message.Description);
             }
         }
 
