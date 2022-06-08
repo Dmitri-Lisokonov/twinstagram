@@ -6,7 +6,7 @@ namespace Shared.Models.Message
     public class Message
     {
         [Key, Required]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         [Required]
         public Guid UserId { get; private set; }

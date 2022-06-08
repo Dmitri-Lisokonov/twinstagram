@@ -15,7 +15,7 @@ namespace UserService.Test
         {
             var options = new DbContextOptionsBuilder<UserServiceDatabaseContext>().UseInMemoryDatabase(databaseName: "InMemoryUserServiceDatabase").Options;
             _context = new UserServiceDatabaseContext(options);
-            _controller = new UserController(_context);
+            _controller = new UserController(_context, null);
             createUsersInMemoryDatabase();        
         }
 

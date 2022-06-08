@@ -34,15 +34,10 @@ namespace MessageService.Controllers
         [Authorize]
         public async Task<IActionResult> GetMessages(Guid userId)
         {
-
-            var messages = await _dbContext.Messages
-               .Where(x => x.UserId == userId)
-               .ToListAsync();
-
-            var messagesDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(messages);
-
+            var messages = await _dbContext.Messages.ToListAsync();
             if (messages.Any())
             {
+                var messagesDto = _mapper.Map<IEnumerable<Message>, IEnumerable<MessageDto>>(messages);
                 return Ok(new ResponseMessage<IEnumerable<MessageDto>>(messagesDto, ResponseStatus.Success.ToString()));
             }
             else
