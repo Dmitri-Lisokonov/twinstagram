@@ -35,7 +35,7 @@ namespace UserService.Test
             _controller.ControllerContext.HttpContext = new DefaultHttpContext();
             _jwtBuilder = new JwtBuilder();
             CreateUsersInMemoryDatabase(_context);
-            
+
 
             // Create new user
             AuthenticationUser user = new AuthenticationUser
@@ -52,19 +52,19 @@ namespace UserService.Test
             // Generate JWT for authentication
             var token = _jwtBuilder.GenerateToken(user, roles);
             _controller.ControllerContext.HttpContext.Request.Headers["Authorization"] = "Bearer " + token;
-            
+
             // Add claims to User in HttpContext
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
-            
-            var userIdentity = new ClaimsIdentity(claims, ClaimTypes.Name); 
+
+            var userIdentity = new ClaimsIdentity(claims, ClaimTypes.Name);
             _controller.ControllerContext.HttpContext.User = new ClaimsPrincipal(userIdentity);
 
         }
-        
+
         [Fact]
         public async Task GetAllMessages()
         {
@@ -79,6 +79,7 @@ namespace UserService.Test
         }
 
         [Fact]
+
         public async Task CreateMessage()
         {
             var createdMessage = new CreateMessage
@@ -87,7 +88,7 @@ namespace UserService.Test
                 Description = "description",
                 Image = "image"
             };
-           
+
             var response = await _controller.CreateNewMessage(createdMessage);
             var resultObject = Assert.IsType<OkObjectResult>(response);
             var message = Assert.IsAssignableFrom<ResponseMessage<string>>(resultObject.Value);
@@ -95,32 +96,19 @@ namespace UserService.Test
             Assert.Equal(ResponseStatus.Success.ToString(), message.Status);
         }
 
-        //[Fact]
-        //public async Task DeleteMessage()
-        //{
-        //    var response = await _controller.GetMessages(_id);
-        //    var resultObject = Assert.IsType<OkObjectResult>(response);
-        //    var messages = Assert.IsAssignableFrom<ResponseMessage<IEnumerable<MessageDto>>>(resultObject.Value);
-        //    var delete = await _controller.DeleteMessage(messages.Data.FirstOrDefault());
-        //    var resultDelete = Assert.IsType<OkObjectResult>(response);
-        //    var resultMessage = Assert.IsAssignableFrom<ResponseMessage<string>>(resultObject.Value);
-        //    Assert.Equal("Your message has been deleted", resultMessage.Data);
-        //    Assert.Equal(ResponseStatus.Success.ToString(), resultMessage.Status);
-        //}
-
         [Fact]
         public async Task GetFeed()
         {
             var response = await _controller.GetFeed();
             var resultObject = Assert.IsType<OkObjectResult>(response);
             var messages = Assert.IsAssignableFrom<ResponseMessage<IEnumerable<MessageDto>>>(resultObject.Value);
-            foreach(var message in messages.Data)
+            foreach (var message in messages.Data)
             {
                 Assert.Equal(_description, message.Description);
                 Assert.Equal(_image, message.Image);
                 Assert.Equal(_followId, message.UserId);
             }
-            
+
         }
 
         private static void CreateUsersInMemoryDatabase(MessageServiceDatabaseContext context)

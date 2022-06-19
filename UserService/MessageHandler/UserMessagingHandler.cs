@@ -8,7 +8,7 @@ namespace UserService.MessageHandler
 {
     public class UserMessagingHandler : IMessageHandler
     {
-        UserServiceDatabaseContext _Dbcontext;
+        readonly UserServiceDatabaseContext _Dbcontext;
         public UserMessagingHandler(UserServiceDatabaseContext dbcontext)
         {
             _Dbcontext = dbcontext;
@@ -21,7 +21,7 @@ namespace UserService.MessageHandler
    
                     var user = JsonSerializer.Deserialize<ApplicationUser>(message.Data);
                     await _Dbcontext.Users.AddAsync(user);
-                    var result = await _Dbcontext.SaveChangesAsync();
+                    await _Dbcontext.SaveChangesAsync();
             }
         }
     }

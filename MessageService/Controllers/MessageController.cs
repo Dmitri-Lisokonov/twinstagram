@@ -51,7 +51,6 @@ namespace MessageService.Controllers
         public async Task<IActionResult> CreateNewMessage(CreateMessage message)
         {
             var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             message.CreatedDate = DateTime.Now;
             message.UserId = Guid.Parse(currentUserId);
             var messageToCreate = _mapper.Map<Message>(message);
@@ -80,7 +79,6 @@ namespace MessageService.Controllers
         public async Task<IActionResult> GetFeed()
         {
             var currentUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentUserName = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             List<Message> feed = new List<Message>();
 
             var following = await _dbContext.Followers.Where(x => x.UserId == Guid.Parse(currentUserId)).ToListAsync();

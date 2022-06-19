@@ -19,7 +19,7 @@ namespace UserService.Controllers
     {
         private readonly UserServiceDatabaseContext _dbContext;
         private readonly Mapper _mapper;
-        private MessagePublisher _publisher;
+        private readonly MessagePublisher _publisher;
 
         public UserController(UserServiceDatabaseContext dbContext, MessagePublisher publisher)
         {
@@ -124,7 +124,7 @@ namespace UserService.Controllers
 
                 List<ApplicationUserDto> followerList = new List<ApplicationUserDto>();
 
-                if (followers.Count() > 0)
+                if (followers.Any())
                 {
                     // Get users for each follow
                     foreach (var follower in followers)
@@ -207,7 +207,7 @@ namespace UserService.Controllers
 
             if (alreadyFollowing is null && userExists is not null)
             {
-                var result = await _dbContext.Followers.AddAsync(new Follow(currentUserGuid, userId));
+                await _dbContext.Followers.AddAsync(new Follow(currentUserGuid, userId));
                 _dbContext.SaveChanges();
                 await _publisher.SendMessage(new RabbitMqMessage(MessageAction.Follow, JsonSerializer.Serialize(new Follow(currentUserGuid, userId))));
                 return Ok(new ResponseMessage<string>("You are now following this user", ResponseStatus.Success.ToString()));

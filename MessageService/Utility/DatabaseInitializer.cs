@@ -8,12 +8,10 @@ namespace MessageService.Utility
         {
             context.Database.EnsureCreated();
 
-#pragma warning disable CS8604 // Possible null reference argument.
             if (context.Messages.Any())
             {
                 return;
             }
-#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public static void DeleteAfter(MessageServiceDatabaseContext context)

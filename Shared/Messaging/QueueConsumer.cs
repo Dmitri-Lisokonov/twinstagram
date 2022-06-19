@@ -23,7 +23,7 @@ namespace Shared.Messaging
         
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            if(_queues.ConsumeQueues.Count() > 0)
+            if(_queues.ConsumeQueues.Any())
             {
                 foreach (var queue in _queues.ConsumeQueues)
                 {

@@ -8,7 +8,7 @@ namespace UserService.MessageHandler
 {
     public class MessageMessagingHandler : IMessageHandler
     {
-        MessageServiceDatabaseContext _Dbcontext;
+        readonly MessageServiceDatabaseContext _Dbcontext;
         public MessageMessagingHandler(MessageServiceDatabaseContext dbcontext)
         {
             _Dbcontext = dbcontext;

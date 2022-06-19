@@ -1,4 +1,3 @@
-using AuthenticationService.Util;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +8,7 @@ using Shared.Models.User;
 using Shared.Messaging;
 using Shared.DTO.RabbitMQ;
 using System.Text.Json;
+using Shared.Util;
 
 namespace AuthenticationService.Controllers
 {
@@ -21,8 +21,8 @@ namespace AuthenticationService.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<AuthenticationController> _logger;
         private readonly Mapper _mapper;
-        private JwtBuilder _jwtBuilder;
-        private MessagePublisher _publisher;
+        private readonly JwtBuilder _jwtBuilder;
+        private readonly MessagePublisher _publisher;
         
 
         public AuthenticationController(
@@ -98,7 +98,6 @@ namespace AuthenticationService.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("createrole")]
         public async Task<IActionResult> CreateUserRole()
@@ -109,7 +108,6 @@ namespace AuthenticationService.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("promote/{id}")]
         public async Task<IActionResult> AddUserToRole(string id)
@@ -119,7 +117,6 @@ namespace AuthenticationService.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteUser()
@@ -127,7 +124,7 @@ namespace AuthenticationService.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             if (user is not null)
             {
-                var result = await _userManager.DeleteAsync(user);
+                await _userManager.DeleteAsync(user);
                 return Ok(new ResponseMessage<string>("User has been deleted", ResponseStatus.Success.ToString()));
             }
             else
